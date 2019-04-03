@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# 封装Flask的全局变量，包括app，数据库等
 from flask import Flask
 from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+# 启动入口
 from application import app, manager
 from flask_script import Server
 import www
 
 ##web server
-manager.add_command("runserver",
-                    Server(host='0.0.0.0', port=app.config['SERVER_PORT'], use_debugger=True, use_reloader=True))
+manager.add_command("runserver", Server(host='0.0.0.0', port=app.config['SERVER_PORT'], use_debugger=True, use_reloader=True))
 
 
 def main():
