@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 # HTTP模块相关初始化
+
+
+from web.interceptors.AuthInterceptor import *
+
 from application import app
+
 from web.controllers.index import route_index
 from web.controllers.user.User import route_user
 from web.controllers.account.Account import route_account
