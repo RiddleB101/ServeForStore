@@ -14,6 +14,7 @@ def index():
     resp_data = {}
     req = request.values
 
+    # 分页
     page = int(req['page']) if ('page' in req and req['page']) else 1
     query = User.query
     page_params = {
@@ -24,6 +25,7 @@ def index():
         'url': '/account/index'
     }
 
+    # 分页方法调用
     pages = iPagination(page_params)
     offset = (page - 1) * app.config['PAGE_SIZE']
     limit = app.config['PAGE_SIZE'] * page
@@ -39,6 +41,7 @@ def index():
 def info():
     resp_data = {}
     req = request.args
+    # TODO
     uid = int(req.get('id', 0))
     reback_url = UrlManager.buildUrl("/account/index")
     if uid < 1:

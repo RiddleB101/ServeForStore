@@ -119,6 +119,7 @@ def resetPwd():
     return response
 
 
+# 登出, 清除cookie
 @route_user.route('/logout')
 def logout():
     response = make_response(redirect(UrlManager.buildUrl("/user/login")))
