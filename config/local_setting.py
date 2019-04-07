@@ -10,7 +10,8 @@ SQLALCHEMY_ENCODING = "utf8mb4"
 AUTH_COOKIE_NAME = "product_store"
 # 过滤URL
 IGNORE_URLS = [
-    "^/user/login"
+    "^/user/login",
+    "^/api"
 ]
 
 IGNORE_CHECK_LOGIN_URLS = [
@@ -21,8 +22,12 @@ IGNORE_CHECK_LOGIN_URLS = [
 PAGE_SIZE = 50
 PAGE_DISPLAY = 10
 
-
 STATUS_MAPPING = {
     "1": "NORMAL",
     "0": "DELETED"
+}
+
+MINI_APP = {
+    "app_id": "wx623e912b628cb4b6",
+    "secret_key": "dba5871fc7aabb884e167899d43c1028"
 }
