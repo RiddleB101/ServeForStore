@@ -2,6 +2,8 @@
 # user的服务类，用于编写加密密码和解密密码的方法，其他服务类也可以放在这里
 import base64
 import hashlib
+import random
+import string
 
 
 class UserService():
@@ -20,3 +22,8 @@ class UserService():
         str = "%s-%s" % (base64.encodebytes(pwd.encode("utf-8")), salt)
         m.update(str.encode("utf-8"))
         return m.hexdigest()
+
+    @staticmethod
+    def geneSalt(length=16):
+        keylist = [random.choice((string.ascii_letters + string.digits)) for i in range(length)]
+        return ("".join(keylist))
