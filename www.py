@@ -3,6 +3,7 @@
 
 
 from web.interceptors.AuthInterceptor import *
+from web.interceptors.ErrorInterceptor import *
 
 from application import app
 

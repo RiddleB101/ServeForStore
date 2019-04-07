@@ -5,9 +5,11 @@ from flask import request, redirect, g
 from common.models.User import User
 from common.libs.user.UserService import UserService
 from common.libs.UrlManager import UrlManager
+from common.libs.LogService import LogService
 import re
 
 
+# 认证拦截器
 @app.before_request
 def before_request():
     ignore_urls = app.config["IGNORE_URLS"]
@@ -21,6 +23,9 @@ def before_request():
     g.current_user = None
     if user_info:
         g.current_user = user_info
+
+    # 加入日志
+    LogService.addAccessLog()
 
     # 判断是否是登录页面请求, 不需要重定向
     pattern = re.compile("%s" % "|".join(ignore_urls))
@@ -57,6 +62,9 @@ def check_login():
         return False
 
     if auth_info[0] != UserService.geneAuthCode(user_info):
+        return False
+
+    if user_info.status != 1:
         return False
 
     return user_info

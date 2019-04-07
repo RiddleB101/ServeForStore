@@ -1250,7 +1250,7 @@ vjs.getAbsoluteURL = function(url){
 // usage: log('inside coolFunc',this,arguments);
 // http://paulirish.com/2009/log-a-lightweight-wrapper-for-consolelog/
 vjs.log = function(){
-  vjs.log.history = vjs.log.history || [];   // store logs to an array for reference
+  vjs.log.history = vjs.log.history || [];   // store log to an array for reference
   vjs.log.history.push(arguments);
   if(window.console){
     window.console.log(Array.prototype.slice.call(arguments));
