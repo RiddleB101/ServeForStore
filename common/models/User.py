@@ -1,5 +1,7 @@
 # coding: utf-8
 # 用户user的数据库ORM
+from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy.schema import FetchedValue
 from application import db
 
 
