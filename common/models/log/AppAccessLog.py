@@ -1,4 +1,5 @@
 # coding: utf-8
+# App接入日志ORM
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.schema import FetchedValue
 from application import db

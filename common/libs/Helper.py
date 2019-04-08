@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# 常用工具类
 from flask import g, render_template
 import datetime
 

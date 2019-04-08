@@ -1,7 +1,8 @@
 # coding: utf-8
+# 会员信息ORM
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.schema import FetchedValue
-from application import db
+from application import db, app
 
 
 class Member(db.Model):
@@ -17,3 +18,17 @@ class Member(db.Model):
     status = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     updated_time = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     created_time = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
+
+    @property
+    def status_desc(self):
+        return app.config['STATUS_MAPPING'][str(self.status)] \
+
+
+    @property
+    def gender_desc(self):
+        gender_mapping = {
+            '0': 'unknown',
+            '1': 'Male',
+            '2': 'Female',
+        }
+        return gender_mapping[str(self.gender)]

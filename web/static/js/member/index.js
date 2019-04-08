@@ -1,5 +1,5 @@
 ;
-var account_index_ops = {
+var member_index_ops = {
     init: function () {
         this.eventBind();
     },
@@ -47,5 +47,5 @@ var account_index_ops = {
 };
 
 $(document).ready(function () {
-    account_index_ops.init()
+    member_index_ops.init()
 });
