@@ -16,6 +16,7 @@ from web.controllers.product.Product import route_product
 from web.controllers.stat.Stat import route_stat
 from web.controllers.static import route_static
 from web.controllers.api import route_api
+from web.controllers.upload.Upload import route_upload
 
 app.register_blueprint(route_index, url_prefix="/")
 app.register_blueprint(route_user, url_prefix="/user")
@@ -26,3 +27,4 @@ app.register_blueprint(route_product, url_prefix="/product")
 app.register_blueprint(route_stat, url_prefix="/stat")
 app.register_blueprint(route_static, url_prefix="/static")
 app.register_blueprint(route_api, url_prefix="/api")
+app.register_blueprint(route_upload, url_prefix="/upload")

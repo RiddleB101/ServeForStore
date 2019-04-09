@@ -23,11 +23,21 @@ PAGE_SIZE = 50
 PAGE_DISPLAY = 10
 
 STATUS_MAPPING = {
-    1: "NORMAL",
-    0: "DELETED"
+    "1": "NORMAL",
+    "0": "DELETED"
 }
 
 MINI_APP = {
     "app_id": "wx623e912b628cb4b6",
     "secret_key": "dba5871fc7aabb884e167899d43c1028"
+}
+
+UPLOAD = {
+    'ext': ['jpg', 'gif', 'png', 'jpeg'],
+    'prefix_path': '/web/static/upload/',
+    'prefix_url': '/static/upload/'
+}
+
+APP = {
+    'domain': "http://127.0.0.1:5000"
 }

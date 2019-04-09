@@ -1,10 +1,7 @@
 # coding: utf-8
 from sqlalchemy import Column, DateTime, Integer, Numeric
 from sqlalchemy.schema import FetchedValue
-from flask_sqlalchemy import SQLAlchemy
-
-
-db = SQLAlchemy()
+from application import db, app
 
 
 class ProductSaleChangeLog(db.Model):

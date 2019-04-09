@@ -81,3 +81,40 @@ def catSet():
     db.session.add(model_product_cat)
     db.session.commit()
     return jsonify(resp)
+
+
+@route_product.route('/ops', methods=['POST'])
+def ops():
+    resp = {"code": 200, "msg": "操作成功", "data": {}}
+    req = request.values
+
+    id = req['id'] if 'id' in req else 0
+    action = req['action'] if 'action' in req else ''
+
+    if not id:
+        resp['code'] = -1
+        resp['msg'] = "该选择要操作的账号!"
+        return jsonify(resp)
+
+    if action not in ['remove', 'recovery']:
+        resp['code'] = -1
+        resp['msg'] = "操作有误，请重试!"
+        return jsonify(resp)
+
+    product_cat_info = ProductCat.query.filter_by(id=id).first()
+    if not product_cat_info:
+        resp['code'] = -1
+        resp['msg'] = "指定分类不存在!"
+        return jsonify(resp)
+
+    if action == "remove":
+        product_cat_info.status = 0
+    elif action == "recovery":
+        product_cat_info.status = 1
+
+    product_cat_info.updated_time = getCurrentDate()
+
+    db.session.add(product_cat_info)
+    db.session.commit()
+
+    return jsonify(resp)

@@ -1,37 +1,37 @@
 {% extends "common/layout_main.html" %}
 {% block content %}
     {% include "common/tab_product.html" %}
-    <div class="row mg-t20 wrap_food_set" style="">
+    <div class="row mg-t20 wrap_product_set" style="">
         <div class="col-lg-12" style="">
-            <h2 class="text-center">设置</h2>
+            <h2 class="text-center">Setting</h2>
             <div class="form-horizontal m-t" style="">
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">分类:</label>
+                    <label class="col-lg-2 control-label">Category:</label>
                     <div class="col-lg-10">
                         <select name="cat_id" class="form-control select2-hidden-accessible" tabindex="-1"
                                 aria-hidden="true">
-                            <option value="0">请选择分类</option>
+                            <option value="0">Please choose a category</option>
                             <option value="8">111</option>
                         </select>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">名称:</label>
+                    <label class="col-lg-2 control-label">Name:</label>
                     <div class="col-lg-10">
                         <input type="text" class="form-control" placeholder="请输入名称" name="name" value="">
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">价格:</label>
+                    <label class="col-lg-2 control-label">Price:</label>
                     <div class="col-lg-10">
                         <input type="text" class="form-control" placeholder="请输入售价" name="price" value="">
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">封面图:</label>
+                    <label class="col-lg-2 control-label">Image:</label>
                     <div class="col-lg-10">
                         <form class="upload_pic_wrap" target="upload_file" enctype="multipart/form-data" method="POST"
                               action="{{ buildUrl('/upload/pic') }}">
@@ -44,21 +44,21 @@
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group" style="">
-                    <label class="col-lg-2 control-label">描述:</label>
+                    <label class="col-lg-2 control-label">Description:</label>
                     <div class="col-lg-10">
                         <textarea id="editor" name="summary" style="height: 300px;"></textarea>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">库存:</label>
+                    <label class="col-lg-2 control-label">Stock:</label>
                     <div class="col-lg-2">
                         <input type="text" name="stock" class="form-control" value="1">
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">标签:</label>
+                    <label class="col-lg-2 control-label">Label:</label>
                     <div class="col-lg-10">
                         <input type="text" class="form-control" name="tags" value="">
                     </div>
@@ -67,10 +67,18 @@
                 <div class="form-group">
                     <div class="col-lg-4 col-lg-offset-2">
                         <input type="hidden" name="id" value="0">
-                        <button class="btn btn-w-m btn-outline btn-primary save">保存</button>
+                        <button class="btn btn-w-m btn-outline btn-primary save">Save</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <iframe name="upload_file" class="hidden"></iframe>
+{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ buildStaticUrl('/plugins/tagsinput/jquery.tagsinput.min.css') }}">
+{% endblock %}
+{% block js %}
+    <script src="{{ buildStaticUrl('/plugins/tagsinput/jquery.tagsinput.min.js') }}"></script>
+    <script src="{{ buildStaticUrl('/js/product/set.js') }}"></script>
 {% endblock %}

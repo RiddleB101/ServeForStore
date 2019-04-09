@@ -21,7 +21,7 @@ class Member(db.Model):
 
     @property
     def status_desc(self):
-        return app.config['STATUS_MAPPING'][str(self.status)] \
+        return app.config['STATUS_MAPPING'][str(self.status)]
 
 
     @property
