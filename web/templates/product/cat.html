@@ -1,19 +1,6 @@
 {% extends "common/layout_main.html" %}
 {% block content %}
-    <div class="row  border-bottom">
-        <div class="col-lg-12">
-            <div class="tab_title">
-                <ul class="nav nav-pills">
-                    <li>
-                        <a href="{{ buildUrl('/product/index') }}">美食列表</a>
-                    </li>
-                    <li class="current">
-                        <a href="{{ buildUrl('/product/cat') }}">分类列表</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    {% include "common/tab_product.html" %}
     <div class="row">
         <div class="col-lg-12">
             <form class="form-inline wrap_search">
@@ -21,8 +8,10 @@
                     <div class="form-group">
                         <select name="status" class="form-control inline">
                             <option value="-1">请选择状态</option>
-                            <option value="1">正常</option>
-                            <option value="0">已删除</option>
+                            {% for key in status_mapping %}
+                                <option value="{{ key }}" {% if key == search_con['status'] %}
+                                        selected {% endif %}>{{ status_mapping[key] }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
@@ -78,4 +67,7 @@
             </table>
         </div>
     </div>
+{% endblock %}
+{% block js %}
+    <script src="{{ buildStaticUrl("/js/product/cat.js") }}"></script>
 {% endblock %}

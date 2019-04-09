@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>管理后台</title>
+    <title>BACK END SYSTEM</title>
     <link href="{{ buildStaticUrl('/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ buildStaticUrl('/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ buildStaticUrl('/css/style.css') }}" rel="stylesheet">
@@ -25,27 +25,27 @@
                 </li>
                 <li class="default">
                     <a href="{{ buildUrl('/') }}"><i class="fa fa-dashboard fa-lg"></i>
-                        <span class="nav-label">仪表盘</span></a>
+                        <span class="nav-label">Dashboard</span></a>
                 </li>
                 <li class="account">
                     <a href="{{ buildUrl('/account/index') }}"><i class="fa fa-user fa-lg"></i> <span
-                            class="nav-label">账号管理</span></a>
+                            class="nav-label">Account</span></a>
                 </li>
-                <li class="food">
+                <li class="product">
                     <a href="{{ buildUrl('/product/index') }}"><i class="fa fa-book fa-lg"></i> <span
-                            class="nav-label">商品管理</span></a>
+                            class="nav-label">Product</span></a>
                 </li>
                 <li class="member">
                     <a href="{{ buildUrl('/member/index') }}"><i class="fa fa-group fa-lg"></i> <span
-                            class="nav-label">会员列表</span></a>
+                            class="nav-label">Member</span></a>
                 </li>
                 <li class="finance">
                     <a href="{{ buildUrl('/finance/index') }}"><i class="fa fa-rmb fa-lg"></i> <span
-                            class="nav-label">财务管理</span></a>
+                            class="nav-label">Finance</span></a>
                 </li>
                 <li class="stat">
                     <a href="{{ buildUrl('/stat/index') }}"><i class="fa fa-bar-chart fa-lg"></i> <span
-                            class="nav-label">统计管理</span></a>
+                            class="nav-label">Statistics</span></a>
                 </li>
             </ul>
 
@@ -62,8 +62,9 @@
                 <ul class="nav navbar-top-links navbar-right">
                     <li>
 						<span class="m-r-sm text-muted welcome-message">
-                            欢迎使用OmniChannel Store管理管理后台
+                            WELCOME TO OmniChannel Store MANAGEMENT SYSTEM
                         </span>
+                        <br>
                     </li>
                     <li class="dropdown user_info">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">
@@ -73,24 +74,24 @@
                         <ul class="dropdown-menu dropdown-messages">
                             <li>
                                 <div class="dropdown-messages-box">
-                                    姓名：{{ current_user.nickname }} <a href="{{ buildUrl('/user/edit') }}"
-                                                                      class="pull-right">编辑</a>
+                                    Name：{{ current_user.nickname }} <a href="{{ buildUrl('/user/edit') }}"
+                                                                        class="pull-right">Edit</a>
                                 </div>
                             </li>
                             <li class="divider"></li>
                             <li>
                                 <div class="dropdown-messages-box">
-                                    手机号码：{{ current_user.mobile }}
+                                    Moblie：{{ current_user.mobile }}
                                 </div>
                             </li>
                             <li class="divider"></li>
                             <li>
                                 <div class="link-block text-center">
                                     <a class="pull-left" href="{{ buildUrl('/user/reset-pwd') }}">
-                                        <i class="fa fa-lock"></i> 修改密码
+                                        <i class="fa fa-lock"></i> Reset Password
                                     </a>
                                     <a class="pull-right" href="{{ buildUrl('/user/logout') }}">
-                                        <i class="fa fa-sign-out"></i> 退出
+                                        <i class="fa fa-sign-out"></i> Exit
                                     </a>
                                 </div>
                             </li>
@@ -104,10 +105,10 @@
         {% block content %}{% endblock %}
     </div>
 </div>
-<div class="hidden hidden_layout_wrap">
-    <input name="domain" value="{{ config.APP.domain }}">
-    <input name="prefix_url" value="{{ config.UPLOAD.prefix_url }}">
-</div>
+{#<div class="hidden hidden_layout_wrap">#}
+{#    <input name="domain" value="{{ config.APP.domain }}">#}
+{#    <input name="prefix_url" value="{{ config.UPLOAD.prefix_url }}">#}
+{#</div>#}
 <script src="{{ buildStaticUrl('/plugins/jquery-2.1.1.js') }}"></script>
 <script src="{{ buildStaticUrl('/bootstrap/bootstrap.min.js') }}"></script>
 <script src="{{ buildStaticUrl('/plugins/layer/layer.js') }}"></script>

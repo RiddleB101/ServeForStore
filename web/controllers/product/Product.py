@@ -13,17 +13,17 @@ route_product = Blueprint('product_page', __name__)
 
 @route_product.route('/index')
 def index():
-    return ops_render('product/index.html')
+    return ops_render('product/index.html', {'current': 'index'})
 
 
 @route_product.route('/info')
 def info():
-    return ops_render('product/info.html')
+    return ops_render('product/info.html', {'current': 'index'})
 
 
 @route_product.route('/set')
 def set():
-    return ops_render('product/set.html')
+    return ops_render('product/set.html', {'current': 'index'})
 
 
 @route_product.route('/cat')
@@ -31,9 +31,16 @@ def cat():
     resp_data = {}
     req = request.values
     query = ProductCat.query
+
+    # 无法筛选TODO
+    if 'status' in req and int(req['status']) > -1:
+        query = query.filter(ProductCat.status == int(req['status']))
+
     list = query.order_by(ProductCat.weight.desc(), ProductCat.id.desc()).all()
     resp_data['list'] = list
+    resp_data['search_con'] = req
     resp_data['current'] = 'cat'
+    # 无法进行筛选TODO
     resp_data['status_mapping'] = app.config['STATUS_MAPPING']
 
     return ops_render('product/cat.html', resp_data)

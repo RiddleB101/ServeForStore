@@ -36,9 +36,10 @@ def index():
     resp_data['list'] = list
     resp_data['pages'] = pages
     resp_data['search_con'] = req
+    # 无法进行筛选TODO
     resp_data['status_mapping'] = app.config['STATUS_MAPPING']
     resp_data['current'] = 'index'
-    return ops_render('member/index.html', {"current": "index"})
+    return ops_render('member/index.html', resp_data)
 
 
 @route_member.route('/info')
@@ -68,11 +69,13 @@ def set():
         if id < 1:
             return redirect(reback_url)
 
+        # 判断是否用户的id在表内存在
+        # 如果不存在就直接返回index
         info = Member.query.filter_by(id=id).first()
         if not info:
             return redirect(reback_url)
 
-        if info.status != -1:
+        if info.status != 1:
             return redirect(reback_url)
 
         resp_data['info'] = info
@@ -80,14 +83,15 @@ def set():
         return ops_render('member/set.html', resp_data)
 
     resp = {'code': 200, 'msg': '操作成功', 'data': {}}
-    req = request.values
-    id = req['id'] if 'id' in req else 0
-    nickname = req['nickname'] if 'nickname' in req else ''
+    req = request.args
+    id = int(req.get("id", 0))
+    nickname = str(req.get("nickname", ''))
 
     if nickname is None or len(nickname) < 1:
         resp['code'] = -1
         resp['msg'] = '请输入符合规范的姓名'
         return jsonify(resp)
+
     member_info = Member.query.filter_by(id=id).first()
     if not member_info:
         resp['code'] = -1

@@ -31,6 +31,7 @@ def login():
     avatar = req['avatarUrl'] if 'avatarUrl' in req else ''
 
     # 判断是否注册过了
+    # 没有注册过的用户，加入数据库当中，进行注册
     bind_info = OauthMemberBind.query.filter_by(openid=openid, type=1).first()
     if not bind_info:
         model_member = Member()
@@ -53,6 +54,7 @@ def login():
 
         bind_info = model_bind
 
+    # 已注册的用户直接查询信息
     member_info = Member.query.filter_by(id=bind_info.member_id).first()
     token = "%s#%s" % (MemberService.geneAuthCode(member_info), member_info.id)
     resp['data'] = {"token": token}

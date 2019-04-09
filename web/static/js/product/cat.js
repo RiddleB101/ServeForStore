@@ -1,12 +1,13 @@
 ;
-var member_index_ops = {
+var product_cat_ops = {
     init: function () {
         this.eventBind();
     },
     eventBind: function () {
         var that = this;
-        $(".wrap_search .search").click(function () {
-            $(".wrap_search").submit()
+        // 通过判断选择框是否发生变化调用回调函数
+        $(".wrap_search select[name=status]").change(function () {
+            $(".wrap_search .search").submit()
         });
 
         $(".remove").click(function () {
@@ -21,7 +22,7 @@ var member_index_ops = {
         var callback = {
             'ok': function () {
                 $.ajax({
-                    url: common_ops.buildUrl("/account/ops"),
+                    url: common_ops.buildUrl("/product/ops"),
                     type: "POST",
                     data: {
                         action: action,
@@ -47,5 +48,5 @@ var member_index_ops = {
 };
 
 $(document).ready(function () {
-    member_index_ops.init()
+    product_cat_ops.init()
 });

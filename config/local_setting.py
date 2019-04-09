@@ -23,8 +23,8 @@ PAGE_SIZE = 50
 PAGE_DISPLAY = 10
 
 STATUS_MAPPING = {
-    "1": "NORMAL",
-    "0": "DELETED"
+    1: "NORMAL",
+    0: "DELETED"
 }
 
 MINI_APP = {
