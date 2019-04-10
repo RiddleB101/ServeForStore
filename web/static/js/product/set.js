@@ -49,7 +49,8 @@ var product_set_ops = {
             var price_target = $(".wrap_product_set input[name=price]");
             var price = price_target.val();
 
-            var summary = $.trim(that.ue.getContent());
+            var summary_target = $("#editor");
+            var summary = summary_target.val();
 
             var stock_target = $(".wrap_product_set input[name=stock]");
             var stock = stock_target.val();
@@ -78,7 +79,7 @@ var product_set_ops = {
             }
 
             if (summary.length < 10) {
-                common_ops.tip("请输入描述，并不能少于10个字符~~", price_target);
+                common_ops.tip("请输入描述，并不能少于10个字符~~", summary_target);
                 return;
             }
 
@@ -106,7 +107,7 @@ var product_set_ops = {
             };
 
             $.ajax({
-                url: common_ops.buildUrl("/food/set"),
+                url: common_ops.buildUrl("/product/set"),
                 type: 'POST',
                 data: data,
                 dataType: 'json',
@@ -115,7 +116,7 @@ var product_set_ops = {
                     var callback = null;
                     if (res.code == 200) {
                         callback = function () {
-                            window.location.href = common_ops.buildUrl("/food/index");
+                            window.location.href = common_ops.buildUrl("/product/index");
                         }
                     }
                     common_ops.alert(res.msg, callback);

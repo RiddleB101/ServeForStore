@@ -1,29 +1,173 @@
 # -*- coding: utf-8 -*-
+from decimal import Decimal
+
 from application import app, db
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, redirect
 from common.libs.Helper import ops_render
 from common.models.product.Product import Product
 from common.models.product.ProductCat import ProductCat
 from common.models.product.ProductSaleChangeLog import ProductSaleChangeLog
 from common.models.product.ProductStockChangeLog import ProductStockChangeLog
-from common.libs.Helper import getCurrentDate
+from common.libs.Helper import getCurrentDate, iPagination, getDictFiletrField
+from common.libs.UrlManager import UrlManager
+from sqlalchemy import or_
 
 route_product = Blueprint('product_page', __name__)
 
 
 @route_product.route('/index')
 def index():
-    return ops_render('product/index.html', {'current': 'index'})
+    resp_data = {}
+    req = request.values
+    page = int(req['p']) if ('p' in req and req['p']) else 1
+    query = Product.query
+    if 'mix_kw' in req:
+        rule = or_(Product.name.ilike("%{0}%".format(req['mix_kw'])),
+                   Product.tags.ilike(("%{0}%".format(req['mix_kw']))))
+        query = query.filter(rule)
+
+    if 'status' in req and int(req['status']) > -1:
+        query = query.filter(Product.status == req['status'])
+
+    if 'cat_id' in req and int(req['cat_id']) > 0:
+        query = query.filter(Product.cat_id == req['cat_id'])
+
+    page_params = {
+        'total': query.count(),
+        'page_size': app.config['PAGE_SIZE'],
+        'page': page,
+        'display': app.config['PAGE_DISPLAY'],
+        'url': request.full_path.replace("&p={}".format(page), "")
+    }
+
+    pages = iPagination(page_params)
+    offset = (page - 1) * app.config['PAGE_SIZE']
+    list = query.order_by(Product.id.desc()).offset(offset).limit(app.config['PAGE_SIZE']).all()
+
+    cat_mapping = getDictFiletrField(ProductCat, 'id', 'id', [])
+    resp_data['list'] = list
+    resp_data['pages'] = pages
+    resp_data['search_con'] = req
+    resp_data['status_mapping'] = app.config['STATUS_MAPPING']
+    resp_data['cat_mapping'] = cat_mapping
+    resp_data['current'] = 'index'
+
+    return ops_render('product/index.html', resp_data)
 
 
 @route_product.route('/info')
 def info():
-    return ops_render('product/info.html', {'current': 'index'})
+    resp_data = {}
+    req = request.args
+    id = int(req.get("id", 0))
+    reback_url = UrlManager.buildUrl("/product/index")
+    if id < 1:
+        return redirect(reback_url)
+    info = Product.query.filter_by(id=id).first()
+    if not info:
+        return redirect(reback_url)
+    stock_change_list = ProductStockChangeLog.query.filter(ProductStockChangeLog.product_id == id).order_by(
+        ProductStockChangeLog.id.desc()).all()
+    resp_data['info'] = info
+    resp_data['stock_change_list'] = stock_change_list
+    resp_data['current'] = 'index'
+    return ops_render('product/info.html', resp_data)
 
 
-@route_product.route('/set')
+@route_product.route('/set', methods=['GET', 'POST'])
 def set():
-    return ops_render('product/set.html', {'current': 'index'})
+    if request.method == 'GET':
+        resp_data = {}
+        req = request.args
+        id = int(req.get('id', 0))
+        info = Product.query.filter_by(id=id).first()
+        if info and info.status != 1:
+            return redirect(UrlManager.buildUrl('/product/index'))
+        resp_data['current'] = 'index'
+        resp_data['info'] = info
+        cat_list = ProductCat.query.all()
+        resp_data['cat_list'] = cat_list
+        return ops_render('product/set.html', resp_data)
+
+    resp = {'code': 200, 'msg': '操作成功', 'data': {}}
+    req = request.values
+    id = int(req('id')) if 'id' in req else ''
+    cat_id = int(req['cat_id']) if 'cat_id' in req else 0
+    name = req['name'] if 'name' in req else ''
+    price = req['price'] if 'price' in req else ''
+    main_image = req['main_image'] if 'main_image' in req else ''
+    summary = req['summary'] if 'summary' in req else ''
+    stock = int(req['stock']) if 'stock' in req else 0
+    tags = req['tags'] if 'tags' in req else ''
+
+    price = Decimal(price).quantize(Decimal('0.00'))
+    if cat_id < 1:
+        resp['code'] = -1
+        resp['msg'] = "请选择分类"
+        return jsonify(resp)
+
+    if name is None or len(name) < 1:
+        resp['code'] = -1
+        resp['msg'] = "请输入符合规范的名称"
+        return jsonify(resp)
+
+    if price <= 0:
+        resp['code'] = -1
+        resp['msg'] = "请输入符合规范的价格"
+        return jsonify(resp)
+
+    if main_image is None or len(main_image) < 1:
+        resp['code'] = -1
+        resp['msg'] = "请上传封面图"
+        return jsonify(resp)
+
+    if summary is None or len(summary) < 1:
+        resp['code'] = -1
+        resp['msg'] = "请输入描述"
+        return jsonify(resp)
+
+    if stock < 1:
+        resp['code'] = -1
+        resp['msg'] = "请输入符合规范的存量"
+        return jsonify(resp)
+
+    if tags is None or len(tags) < 1:
+        resp['code'] = -1
+        resp['msg'] = "请输入标签"
+        return jsonify(resp)
+
+    product_info = Product.query.filter_by(id=id).first()
+    before_stock = 0
+    if product_info:
+        model_product = product_info
+        before_stock = model_product.stock
+    else:
+        model_product = Product()
+        model_product.status = 1
+        model_product.created_time = getCurrentDate()
+
+    model_product.cat_id = cat_id
+    model_product.name = name
+    model_product.price = price
+    model_product.main_image = main_image
+    model_product.summary = summary
+    model_product.stock = stock
+    model_product.tags = tags
+    model_product.updated_time = getCurrentDate()
+
+    db.session.add(model_product)
+    ret = db.session.commit()
+
+    model_stock_change = ProductStockChangeLog()
+    model_stock_change.product_id = model_product.id
+    model_stock_change.unit = int(stock) - int(before_stock)
+    model_stock_change.total_stock = int(stock)
+    model_stock_change.note = ''
+    model_stock_change.created_time = getCurrentDate()
+
+    db.session.add(model_stock_change)
+    db.session.commit()
+    return jsonify(resp)
 
 
 @route_product.route('/cat')

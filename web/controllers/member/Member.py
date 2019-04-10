@@ -17,7 +17,7 @@ def index():
     query = Member.query
 
     if 'mix_kw' in req:
-        query = query.filter(Member.nickname.like("%{0}%".format(req['mix_kw'])))
+        query = query.filter(Member.nickname.ilike("%{0}%".format(req['mix_kw'])))
 
     if 'status' in req and int(req['status']) > -1:
         query = query.filter(Member.status == req['status'])
