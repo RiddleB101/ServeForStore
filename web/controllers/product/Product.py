@@ -83,15 +83,17 @@ def set():
         info = Product.query.filter_by(id=id).first()
         if info and info.status != 1:
             return redirect(UrlManager.buildUrl('/product/index'))
+
+        cat_list = ProductCat.query.all()
+
         resp_data['current'] = 'index'
         resp_data['info'] = info
-        cat_list = ProductCat.query.all()
         resp_data['cat_list'] = cat_list
         return ops_render('product/set.html', resp_data)
 
     resp = {'code': 200, 'msg': '操作成功', 'data': {}}
     req = request.values
-    id = int(req('id')) if 'id' in req else ''
+    id = int(req('id')) if 'id' in req and req['id'] else 0
     cat_id = int(req['cat_id']) if 'cat_id' in req else 0
     name = req['name'] if 'name' in req else ''
     price = req['price'] if 'price' in req else ''

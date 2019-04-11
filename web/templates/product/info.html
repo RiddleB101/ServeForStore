@@ -24,7 +24,7 @@
                     <p>Price：{{ info.price }}</p>
                     <p>Stock：{{ info.stock }}</p>
                     <p>Label：{{ info.tags }}</p>
-                    <p>Images：<img src="{{ buildStaticUrl(info.main_image) }}" style="width: 50px;height: 50px;">
+                    <p>Images：<img src="{{ buildImageUrl(info.main_image) }}" style="width: 50px;height: 50px;">
                     </p>
                     <p>Description：</p>
                     <p>{{ info.summary | safe }}</p>

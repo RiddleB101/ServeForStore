@@ -8,18 +8,18 @@
                     <div class="form-group">
                         <select name="status" class="form-control inline">
                             <option value="-1">请选择状态</option>
-                            {% for key in status_mapping %}
-                                <option value="{{ key }}" {% if key == search_con['status'] %}
-                                        selected {% endif %}>{{ status_mapping['key'] }}</option>
+                            {% for tmp_key in status_mapping %}
+                                <option value="{{ tmp_key }}" {% if tmp_key == search_con['status'] %}
+                                        selected {% endif %}>{{ status_mapping[ tmp_key ] }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="form-group">
                         <select name="cat_id" class="form-control inline">
                             <option value="0">请选择分类</option>
-                            {% for key in cat_mapping %}
-                                <option value="{{ key }}" {% if key|string == search_con['cat_id'] %}
-                                        selected {% endif %}>{{ cat_mapping['key'].name }}</option>
+                            {% for tmp_key in cat_mapping %}
+                                <option value="{{ tmp_key }}" {% if tmp_key|string == search_con['cat_id'] %}
+                                        selected {% endif %} >{{ cat_mapping[ tmp_key].name }}</option>
                             {% endfor %}
 
                         </select>
@@ -59,26 +59,27 @@
                 <tbody>
                 {% if list %}
                     {% for item in list %}
-                    <tr>
-                        <td>{{ item.name }}</td>
-                        <td>{{ cat_mapping[item.cat_id].name }}</td>
-                        <td>{{ item.price }}</td>
-                        <td>{{ item.stock }}</td>
-                        <td>{{ item.tags }}</td>
-                        <td>
-                            <a href="{{ buildUrl('/product/info') }}?id={{ item.id }}">
-                                <i class="fa fa-eye fa-lg"></i>
-                            </a>
-                            <a class="m-l" href="{{ buildUrl('/product/set') }}?id={{ item.id }}">
-                                <i class="fa fa-edit fa-lg"></i>
-                            </a>
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ cat_mapping[item.cat_id].name }}</td>
+                            <td>{{ item.price }}</td>
+                            <td>{{ item.stock }}</td>
+                            <td>{{ item.tags }}</td>
+                            <td>
+                                <a href="{{ buildUrl('/product/info') }}?id={{ item.id }}">
+                                    <i class="fa fa-eye fa-lg"></i>
+                                </a>
+                                <a class="m-l" href="{{ buildUrl('/product/set') }}?id={{ item.id }}">
+                                    <i class="fa fa-edit fa-lg"></i>
+                                </a>
 
-                            <a class="m-l remove" href="javascript:void(0);" data="{{ item.id }}">
-                                <i class="fa fa-trash fa-lg"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% else %}
+                                <a class="m-l remove" href="javascript:void(0);" data="{{ item.id }}">
+                                    <i class="fa fa-trash fa-lg"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
                     <tr>
                         <td colspan="6">No Data</td>
                     </tr>

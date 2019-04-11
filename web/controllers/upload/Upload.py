@@ -4,7 +4,7 @@ from application import app
 import re, json
 from common.libs.UploadService import UploadService
 from common.libs.UrlManager import UrlManager
-from common.models import ImgInfo
+from common.models.ImgInfo import ImgInfo
 
 route_upload = Blueprint('upload_page', __name__)
 
