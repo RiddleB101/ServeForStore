@@ -3,7 +3,6 @@
 from web.controllers.api import route_api
 from flask import request, json, jsonify
 from application import app, db
-import requests, json
 from common.models.member.Member import Member
 from common.models.member.OauthMemberBind import OauthMemberBind
 from common.libs.Helper import getCurrentDate

@@ -10,13 +10,16 @@ SQLALCHEMY_ENCODING = "utf8mb4"
 AUTH_COOKIE_NAME = "product_store"
 # 过滤URL
 IGNORE_URLS = [
-    "^/user/login",
-    "^/api"
+    "^/user/login"
 ]
 
 IGNORE_CHECK_LOGIN_URLS = [
     "^/static",
     "^/favicon.ico"
+]
+
+API_IGNORE_URLS = [
+    "^/api"
 ]
 
 PAGE_SIZE = 50

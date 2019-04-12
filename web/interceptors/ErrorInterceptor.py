@@ -9,5 +9,5 @@ from common.libs.LogService import LogService
 @app.errorhandler(404)
 def error_404(e):
     LogService.addErrorLog(str(e))
-    return ops_render('error/error.html', {"status": 404, "msg": "页面不存在！"})
+    return ops_render('error/error.html', {"status": 404, "msg": "The Page is NOT EXISTED!"})
 

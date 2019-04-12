@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 # HTTP模块相关初始化
 
-
+# 拦截器注册
 from web.interceptors.AuthInterceptor import *
+from web.interceptors.ApiAuthInterceptor import *
 from web.interceptors.ErrorInterceptor import *
 
+# app注册
 from application import app
 
+# 蓝图路由注册
 from web.controllers.index import route_index
 from web.controllers.user.User import route_user
 from web.controllers.account.Account import route_account

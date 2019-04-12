@@ -15,6 +15,11 @@ def before_request():
     ignore_urls = app.config["IGNORE_URLS"]
     ignore_check_login_urls = app.config["IGNORE_CHECK_LOGIN_URLS"]
     path = request.path
+
+    # 如果有/api路径则不进行判断, 以便将后端的登录和前端的登录进行分离
+    if "/api" in path:
+        return
+
     # 判断是否是静态页面请求
     pattern = re.compile("%s" % "|".join(ignore_check_login_urls))
     if pattern.match(path):

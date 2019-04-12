@@ -44,7 +44,7 @@ def index():
     offset = (page - 1) * app.config['PAGE_SIZE']
     list = query.order_by(Product.id.desc()).offset(offset).limit(app.config['PAGE_SIZE']).all()
 
-    cat_mapping = getDictFiletrField(ProductCat, 'id', 'id', [])
+    cat_mapping = getDictFiletrField(ProductCat, ProductCat.id, 'id', [])
     resp_data['list'] = list
     resp_data['pages'] = pages
     resp_data['search_con'] = req
