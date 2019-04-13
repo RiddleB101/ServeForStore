@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 # user的服务类，用于编写加密密码和解密密码的方法，其他服务类也可以放在这里
 import base64
 import hashlib, random, string, requests, json

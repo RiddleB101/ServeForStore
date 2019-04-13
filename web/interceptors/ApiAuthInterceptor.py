@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from application import app
-from flask import request, redirect, g, jsonify
+from flask import request, g, jsonify
 from common.models.member.Member import Member
 from common.libs.member.MemberService import MemberService
 import re
@@ -17,16 +17,15 @@ def before_request_api():
         return
 
     member_info = check_member_login()
+
     g.member_info = None
     if member_info:
         g.member_info = member_info
-
     # 判断是否是登录页面请求, 不需要重定向
     pattern = re.compile("%s" % "|".join(api_ignore_urls))
     if pattern.match(path):
         return
 
-    print(member_info)
     if not member_info:
         resp = {'code': -1, 'msg': '未登录', 'data': {}}
         return jsonify(resp)
@@ -40,6 +39,7 @@ def check_member_login():
     if auth_cookie is None:
         return False
 
+    print(auth_cookie)
     auth_info = auth_cookie.split("#")
     if len(auth_info) != 2:
         return False
@@ -51,6 +51,8 @@ def check_member_login():
     except Exception:
         return False
 
+    print('5')
+
     if member_info is None:
         return False
 
@@ -59,5 +61,7 @@ def check_member_login():
 
     if member_info.status != 1:
         return False
+
+    print('6')
 
     return member_info

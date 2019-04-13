@@ -18,8 +18,10 @@ IGNORE_CHECK_LOGIN_URLS = [
     "^/favicon.ico"
 ]
 
+# 前端api过滤URL
 API_IGNORE_URLS = [
-    "^/api"
+    "^/api/member/login",
+    "^/api/product"
 ]
 
 PAGE_SIZE = 50
