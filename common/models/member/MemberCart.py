@@ -1,10 +1,7 @@
 # coding: utf-8
 from sqlalchemy import BigInteger, Column, DateTime, Integer
 from sqlalchemy.schema import FetchedValue
-from flask_sqlalchemy import SQLAlchemy
-
-
-db = SQLAlchemy()
+from application import db, app
 
 
 class MemberCart(db.Model):

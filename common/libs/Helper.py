@@ -69,7 +69,7 @@ def getDictFiletrField(db_model, select_field, key_field, id_list):
     ret = {}
     query = db_model.query
     if id_list and len(id_list) > 0:
-        query = query.filter_by(select_field.in_(id_list))
+        query = query.filter(select_field.in_(id_list))
 
     list = query.all()
     if not list:
@@ -80,4 +80,18 @@ def getDictFiletrField(db_model, select_field, key_field, id_list):
             break
 
         ret[getattr(item, key_field)] = item
+    return ret
+
+
+# 将获取的字段放入数组列表当中
+def selectFilter(obj, field):
+    ret = []
+    for item in obj:
+        if not hasattr(item, field):
+            continue
+        if getattr(item, field) in ret:
+            continue
+
+        ret.append(getattr(item, field))
+
     return ret

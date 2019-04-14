@@ -193,22 +193,6 @@ CREATE TABLE `member_cart`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='购物车';
 
-DROP TABLE IF EXISTS `member_comments`;
-
-CREATE TABLE `member_comments`
-(
-    `id`           int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `member_id`    int(11)          NOT NULL DEFAULT '0' COMMENT '会员id',
-    `food_ids`     varchar(200)     NOT NULL DEFAULT '' COMMENT '商品ids',
-    `pay_order_id` int(11)          NOT NULL DEFAULT '0' COMMENT '订单id',
-    `score`        tinyint(4)       NOT NULL DEFAULT '0' COMMENT '评分',
-    `content`      varchar(200)     NOT NULL DEFAULT '' COMMENT '评论内容',
-    `created_time` timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '插入时间',
-    PRIMARY KEY (`id`),
-    KEY `idx_member_id` (`member_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='会员评论表';
-
 DROP TABLE IF EXISTS `pay_order`;
 
 CREATE TABLE `pay_order`
@@ -217,7 +201,6 @@ CREATE TABLE `pay_order`
     `order_sn`           varchar(40)      NOT NULL DEFAULT '' COMMENT '随机订单号',
     `member_id`          bigint(11)       NOT NULL DEFAULT '0' COMMENT '会员id',
     `total_price`        decimal(10, 2)   NOT NULL DEFAULT '0.00' COMMENT '订单应付金额',
-    `yun_price`          decimal(10, 2)   NOT NULL DEFAULT '0.00' COMMENT '运费金额',
     `pay_price`          decimal(10, 2)   NOT NULL DEFAULT '0.00' COMMENT '订单实付金额',
     `pay_sn`             varchar(128)     NOT NULL DEFAULT '' COMMENT '第三方流水号',
     `prepay_id`          varchar(128)     NOT NULL DEFAULT '' COMMENT '第三方预付id',
@@ -226,7 +209,6 @@ CREATE TABLE `pay_order`
     `express_status`     tinyint(4)       NOT NULL DEFAULT '0' COMMENT '快递状态，-8 待支付 -7 已付款待发货 1：确认收货 0：失败',
     `express_address_id` int(11)          NOT NULL DEFAULT '0' COMMENT '快递地址id',
     `express_info`       varchar(1000)    NOT NULL DEFAULT '' COMMENT '快递信息',
-    `comment_status`     tinyint(1)       NOT NULL DEFAULT '0' COMMENT '评论状态',
     `pay_time`           timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '付款到账时间',
     `updated_time`       timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近一次更新时间',
     `created_time`       timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
@@ -234,7 +216,7 @@ CREATE TABLE `pay_order`
     UNIQUE KEY `idx_order_sn` (`order_sn`),
     KEY `idx_member_id_status` (`member_id`, `status`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='在线购买订单表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='购买订单表';
 
 
 DROP TABLE IF EXISTS `pay_order_item`;

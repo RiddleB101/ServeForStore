@@ -27,7 +27,7 @@ class Member(db.Model):
     @property
     def gender_desc(self):
         gender_mapping = {
-            '0': 'unknown',
+            '0': 'Unknown',
             '1': 'Male',
             '2': 'Female',
         }
