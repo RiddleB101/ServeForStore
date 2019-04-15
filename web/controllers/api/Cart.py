@@ -5,7 +5,7 @@ from flask import request, jsonify, g
 from common.models.product.Product import Product
 from common.models.member.MemberCart import MemberCart
 from common.libs.member.CartService import CartService
-from common.libs.Helper import selectFilter, getDictFiletrField
+from common.libs.Helper import selectFilterObj, getDictFiletrField
 from common.libs.UrlManager import UrlManager
 import json
 
@@ -22,7 +22,7 @@ def cartIndex():
     cart_list = MemberCart.query.filter_by(member_id=member_info.id).all()
     data_cart_list = []
     if cart_list:
-        product_ids = selectFilter(cart_list, 'product_id')
+        product_ids = selectFilterObj(cart_list, 'product_id')
         product_map = getDictFiletrField(Product, Product.id, 'id', product_ids)
         for item in cart_list:
             tmp_product_info = product_map[item.product_id]

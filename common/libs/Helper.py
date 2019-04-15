@@ -84,7 +84,7 @@ def getDictFiletrField(db_model, select_field, key_field, id_list):
 
 
 # 将获取的字段放入数组列表当中
-def selectFilter(obj, field):
+def selectFilterObj(obj, field):
     ret = []
     for item in obj:
         if not hasattr(item, field):

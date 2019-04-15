@@ -8,8 +8,9 @@ from web.controllers.api.Member import *
 from web.controllers.api.Product import *
 from web.controllers.api.Cart import *
 from web.controllers.api.Order import *
+from web.controllers.api.My import *
 
 
 @route_api.route('/')
 def index():
-    return "MiniApp"
+    return "MiniApp API"

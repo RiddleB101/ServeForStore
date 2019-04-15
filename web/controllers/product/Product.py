@@ -4,6 +4,7 @@ from decimal import Decimal
 from application import app, db
 from flask import Blueprint, jsonify, request, redirect
 from common.libs.Helper import ops_render
+from common.libs.product.ProductService import ProductService
 from common.models.product.Product import Product
 from common.models.product.ProductCat import ProductCat
 from common.models.product.ProductSaleChangeLog import ProductSaleChangeLog
@@ -93,7 +94,7 @@ def set():
 
     resp = {'code': 200, 'msg': '操作成功', 'data': {}}
     req = request.values
-    id = int(req('id')) if 'id' in req and req['id'] else 0
+    id = int(req['id']) if 'id' in req and req['id'] else 0
     cat_id = int(req['cat_id']) if 'cat_id' in req else 0
     name = req['name'] if 'name' in req else ''
     price = req['price'] if 'price' in req else ''
@@ -159,16 +160,7 @@ def set():
 
     db.session.add(model_product)
     ret = db.session.commit()
-
-    model_stock_change = ProductStockChangeLog()
-    model_stock_change.product_id = model_product.id
-    model_stock_change.unit = int(stock) - int(before_stock)
-    model_stock_change.total_stock = int(stock)
-    model_stock_change.note = ''
-    model_stock_change.created_time = getCurrentDate()
-
-    db.session.add(model_stock_change)
-    db.session.commit()
+    ProductService.setStockChangeLog(model_product.id, int(stock) - int(before_stock), 'Back-end Modified')
     return jsonify(resp)
 
 
