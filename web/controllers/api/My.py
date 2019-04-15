@@ -53,6 +53,7 @@ def myOrderList():
                 "status": item.status,
                 "date": item.created_time.strftime("%Y-%m-%d %H:%M:%S"),
                 "order_number": item.order_number,
+                "order_sn": item.order_sn,
                 "note": item.note,
                 "total_price": str(item.total_price),
                 "goods_list": pay_order_item_map[item.id]
