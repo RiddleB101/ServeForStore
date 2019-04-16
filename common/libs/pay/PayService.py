@@ -4,9 +4,12 @@ from application import app, db
 from common.models.product.Product import Product
 from common.models.pay.PayOrder import PayOrder
 from common.models.pay.PayOrderItem import PayOrderItem
+from common.models.product.ProductStockChangeLog import ProductStockChangeLog
+from common.models.product.ProductSaleChangeLog import ProductSaleChangeLog
 from common.models.pay.PayOrderCallbackData import PayOrderCallbackDatum
 from common.libs.Helper import getCurrentDate
 from common.libs.product.ProductService import ProductService
+from common.libs.queue.QueueService import QueueService
 
 
 class PayService():
@@ -106,3 +109,78 @@ class PayService():
                 break
 
         return sn
+
+    def closeOrder(self, pay_order_id=0):
+        if pay_order_id < 1:
+            return False
+        pay_order_info = PayOrder.query.filter_by(id=pay_order_id, status=-8).first()
+        if not pay_order_info:
+            return False
+
+        pay_order_items = PayOrderItem.query.filter_by(pay_order_id=pay_order_id).all()
+        if pay_order_items:
+            # 需要归还库存
+            for item in pay_order_items:
+                tmp_product_info = Product.query.filter_by(id=item.product_id).first()
+                if tmp_product_info:
+                    tmp_product_info.stock = tmp_product_info.stock + item.quantity
+                    tmp_product_info.updated_time = getCurrentDate()
+                    db.session.add(tmp_product_info)
+                    db.session.commit()
+                    ProductService.setStockChangeLog(item.product_id, item.quantity, "订单取消")
+
+        pay_order_info.status = 0
+        pay_order_info.updated_time = getCurrentDate()
+        db.session.add(pay_order_info)
+        db.session.commit()
+        return True
+
+    def orderSuccess(self, pay_order_id=0, params=None):
+        try:
+            pay_order_info = PayOrder.query.filter_by(id=pay_order_id).first()
+            if not pay_order_info or pay_order_info.status not in [-8, -7]:
+                return True
+
+            pay_order_info.pay_sn = params['pay_sn'] if params and 'pay_sn' in params else ''
+            pay_order_info.status = 1
+            pay_order_info.express_status = -7
+            pay_order_info.updated_time = getCurrentDate()
+            db.session.add(pay_order_info)
+
+            pay_order_items = PayOrderItem.query.filter_by(pay_order_id=pay_order_id).all()
+            for order_item in pay_order_items:
+                tmp_model_sale_log = ProductSaleChangeLog()
+                tmp_model_sale_log.product_id = order_item.product_id
+                tmp_model_sale_log.quantity = order_item.quantity
+                tmp_model_sale_log.price = order_item.price
+                tmp_model_sale_log.member_id = order_item.member_id
+                tmp_model_sale_log.created_time = getCurrentDate()
+                db.session.add(tmp_model_sale_log)
+
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(e)
+            return False
+
+        # 加入通知队列，做消息提醒和
+        QueueService.addQueue("pay", {
+            "member_id": pay_order_info.member_id,
+            "pay_order_id": pay_order_info.id
+        })
+        return True
+
+    def addPayCallbackData(self, pay_order_id=0, type='pay', data=''):
+        model_callback = PayOrderCallbackDatum()
+        model_callback.pay_order_id = pay_order_id
+        if type == "pay":
+            model_callback.pay_data = data
+            model_callback.refund_data = ''
+        else:
+            model_callback.refund_data = data
+            model_callback.pay_data = ''
+
+        model_callback.created_time = model_callback.updated_time = getCurrentDate()
+        db.session.add(model_callback)
+        db.session.commit()
+        return True
