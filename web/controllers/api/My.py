@@ -62,3 +62,42 @@ def myOrderList():
 
     resp['data']['pay_order_list'] = data_pay_order_list
     return jsonify(resp)
+
+
+@route_api.route("/my/order/info")
+def myOrderInfo():
+    resp = {'code': 200, 'msg': '操作成功~', 'data': {}}
+    member_info = g.member_info
+    req = request.values
+    order_sn = req['order_sn'] if 'order_sn' in req else ''
+    pay_order_info = PayOrder.query.filter_by(member_id=member_info.id, order_sn=order_sn).first()
+    if not pay_order_info:
+        resp['code'] = -1
+        resp['msg'] = "系统繁忙，请稍后再试~~"
+        return jsonify(resp)
+
+    tmp_deadline = pay_order_info.created_time + datetime.timedelta(minutes=30)
+    info = {
+        "order_sn": pay_order_info.order_sn,
+        "status": pay_order_info.status,
+        "pay_price": str(pay_order_info.pay_price),
+        "total_price": str(pay_order_info.total_price),
+        "goods": [],
+        "deadline": tmp_deadline.strftime("%Y-%m-%d %H:%M")
+    }
+
+    pay_order_items = PayOrderItem.query.filter_by(pay_order_id=pay_order_info.id).all()
+    if pay_order_items:
+        product_ids = selectFilterObj(pay_order_items, "product_id")
+        product_map = getDictFiletrField(Product, Product.id, "id", product_ids)
+        for item in pay_order_items:
+            tmp_product_info = product_map[item.product_id]
+            tmp_data = {
+                "name": tmp_product_info.name,
+                "price": str(item.price),
+                "unit": item.quantity,
+                "pic_url": UrlManager.buildImageUrl(tmp_product_info.main_image),
+            }
+            info['goods'].append(tmp_data)
+    resp['data']['info'] = info
+    return jsonify(resp)

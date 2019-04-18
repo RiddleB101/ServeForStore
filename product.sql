@@ -1,5 +1,5 @@
 CREATE DATABASE `product_db` DEFAULT CHARACTER SET = `utf8mb4`;
-
+use product_db;
 
 DROP TABLE IF EXISTS `user`;
 
@@ -166,9 +166,9 @@ CREATE TABLE `product_stock_change_log`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='数据库存变更表';
 
-DROP TABLE IF EXISTS `images`;
+DROP TABLE IF EXISTS `img_info`;
 
-CREATE TABLE `images`
+CREATE TABLE `img_info`
 (
     `id`           int(11) unsigned NOT NULL AUTO_INCREMENT,
     `file_key`     varchar(60)      NOT NULL DEFAULT '' COMMENT '文件名',
@@ -253,88 +253,68 @@ CREATE TABLE `pay_order_callback_data`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+DROP TABLE IF EXISTS `member_comments`;
+
+CREATE TABLE `member_comments` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `member_id` int(11) NOT NULL DEFAULT '0' COMMENT '会员id',
+  `food_ids` varchar(200) NOT NULL DEFAULT '' COMMENT '商品ids',
+  `pay_order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单id',
+  `score` tinyint(4) NOT NULL DEFAULT '0' COMMENT '评分',
+  `content` varchar(200) NOT NULL DEFAULT '' COMMENT '评论内容',
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '插入时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_member_id` (`member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员评论表';
+
+DROP TABLE IF EXISTS `stat_daily_food`;
+
+CREATE TABLE `stat_daily_food` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `food_id` int(11) NOT NULL DEFAULT '0' COMMENT '菜品id',
+  `total_count` int(11) NOT NULL DEFAULT '0' COMMENT '售卖总数量',
+  `total_pay_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '总售卖金额',
+  `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后一次更新时间',
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
+  PRIMARY KEY (`id`),
+  KEY `date_food_id` (`date`,`food_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='书籍售卖日统计';
 
 
-DROP TABLE IF EXISTS `queue_list`;
-
-CREATE TABLE `queue_list`
-(
-    `id`           int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `queue_name`   varchar(30)      NOT NULL DEFAULT '' COMMENT '队列名字',
-    `data`         varchar(500)     NOT NULL DEFAULT '' COMMENT '队列数据',
-    `status`       tinyint(1)       NOT NULL DEFAULT '-1' COMMENT '状态 -1 待处理 1 已处理',
-    `updated_time` timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后一次更新时间',
-    `created_time` timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='事件队列表';
-
-
-DROP TABLE IF EXISTS `oauth_access_token`;
-
-CREATE TABLE `oauth_access_token`
-(
-    `id`           int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `access_token` varchar(600)     NOT NULL DEFAULT '',
-    `expired_time` timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '过期时间',
-    `created_time` timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
-    PRIMARY KEY (`id`),
-    KEY `idx_expired_time` (`expired_time`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='微信的access_token 用户调用其他接口的';
-
-
-
-DROP TABLE IF EXISTS `stat_daily_product`;
-
-CREATE TABLE `stat_daily_product`
-(
-    `id`              int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `date`            date             NOT NULL,
-    `product_id`      int(11)          NOT NULL DEFAULT '0' COMMENT '商品id',
-    `total_count`     int(11)          NOT NULL DEFAULT '0' COMMENT '售卖总数量',
-    `total_pay_money` decimal(10, 2)   NOT NULL DEFAULT '0.00' COMMENT '总售卖金额',
-    `updated_time`    timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后一次更新时间',
-    `created_time`    timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
-    PRIMARY KEY (`id`),
-    KEY `date_product_id` (`date`, `product_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='商品售卖日统计';
 
 
 
 DROP TABLE IF EXISTS `stat_daily_member`;
 
-CREATE TABLE `stat_daily_member`
-(
-    `id`                 int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `date`               date             NOT NULL COMMENT '日期',
-    `member_id`          int(11)          NOT NULL DEFAULT '0' COMMENT '会员id',
-    `total_shared_count` int(11)          NOT NULL DEFAULT '0' COMMENT '当日分享总次数',
-    `total_pay_money`    decimal(10, 2)   NOT NULL DEFAULT '0.00' COMMENT '当日付款总金额',
-    `updated_time`       timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后一次更新时间',
-    `created_time`       timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
-    PRIMARY KEY (`id`),
-    KEY `idx_date_member_id` (`date`, `member_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='会员日统计';
+CREATE TABLE `stat_daily_member` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL COMMENT '日期',
+  `member_id` int(11) NOT NULL DEFAULT '0' COMMENT '会员id',
+  `total_shared_count` int(11) NOT NULL DEFAULT '0' COMMENT '当日分享总次数',
+  `total_pay_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '当日付款总金额',
+  `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后一次更新时间',
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_date_member_id` (`date`,`member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员日统计';
+
+
 
 
 
 DROP TABLE IF EXISTS `stat_daily_site`;
 
-CREATE TABLE `stat_daily_site`
-(
-    `id`                     int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `date`                   date             NOT NULL COMMENT '日期',
-    `total_pay_money`        decimal(10, 2)   NOT NULL DEFAULT '0.00' COMMENT '当日应收总金额',
-    `total_member_count`     int(11)          NOT NULL COMMENT '会员总数',
-    `total_new_member_count` int(11)          NOT NULL COMMENT '当日新增会员数',
-    `total_order_count`      int(11)          NOT NULL COMMENT '当日订单数',
-    `total_shared_count`     int(11)          NOT NULL,
-    `updated_time`           timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后一次更新时间',
-    `created_time`           timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
-    PRIMARY KEY (`id`),
-    KEY `idx_date` (`date`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='全站日统计';
+CREATE TABLE `stat_daily_site` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL COMMENT '日期',
+  `total_pay_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '当日应收总金额',
+  `total_member_count` int(11) NOT NULL COMMENT '会员总数',
+  `total_new_member_count` int(11) NOT NULL COMMENT '当日新增会员数',
+  `total_order_count` int(11) NOT NULL COMMENT '当日订单数',
+  `total_shared_count` int(11) NOT NULL,
+  `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后一次更新时间',
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_date` (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='全站日统计';

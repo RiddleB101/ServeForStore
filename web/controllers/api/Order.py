@@ -10,6 +10,7 @@ from common.libs.pay.PayService import PayService
 from common.libs.UrlManager import UrlManager
 from common.models.product.Product import Product
 from common.models.pay.PayOrder import PayOrder
+from common.models.pay.PayOrderItem import PayOrderItem
 from common.models.member.OauthMemberBind import OauthMemberBind
 from common.models.product.ProductCat import ProductCat
 from common.models.member.MemberCart import MemberCart
@@ -21,8 +22,29 @@ from common.libs.member.CartService import CartService
 def orderInfo():
     resp = {"code": 200, "msg": "添加成功", "data": {}}
     req = request.values
-    params_goods = req['goods'] if 'goods' in req else None
+    # order_sn = str(req.get('order_sn', ''))
     member_info = g.member_info
+    # print(order_sn)
+    # order_info = PayOrder.query.filter_by(order_sn=order_sn).first()
+    # print(order_info)
+    #
+    # data_product_list = []
+    # pay_price = decimal.Decimal(0.00)
+    # if order_info:
+    #     goods_list = PayOrderItem.query.filter_by(id=order_info.id).all()
+    #     for item in goods_list:
+    #         tmp_data = {
+    #             'id': item.id,
+    #             'name': item.name,
+    #             'price': str(item.price),
+    #             'pic_url': UrlManager.buildImageUrl(item.main_image),
+    #             'number': item.quantity
+    #         }
+    #         pay_price = pay_price + item.price * int(item.quantity)
+    #         data_product_list.append(tmp_data)
+    #     print(data_product_list)
+
+    params_goods = req['goods'] if 'goods' in req else None
     params_goods_list = []
     if params_goods:
         params_goods_list = json.loads(params_goods)
@@ -81,3 +103,51 @@ def orderCreate():
     return jsonify(resp)
 
 
+@route_api.route("/order/pay", methods=["POST"])
+def orderPay():
+    resp = {"code": 200, "msg": "请前往收银台支付", "data": {}}
+    req = request.values
+
+    order_sn = req['order_sn'] if 'order_sn' in req else ''
+    if not order_sn:
+        resp['code'] = -1
+        resp['msg'] = '下单失败, 请选择商品'
+        return jsonify(resp)
+
+    order_info = PayOrder.query.filter_by(order_sn=order_sn).first()
+    print(order_info)
+    if not order_info:
+        resp['code'] = -1
+        resp['msg'] = '订单出错'
+        return jsonify(resp)
+
+    return jsonify(resp)
+
+
+@route_api.route("/order/ops", methods=["POST"])
+def orderOps():
+    resp = {'code': 200, 'msg': '操作成功~', 'data': {}}
+    req = request.values
+    member_info = g.member_info
+    order_sn = req['order_sn'] if 'order_sn' in req else ''
+    act = req['act'] if 'act' in req else ''
+    pay_order_info = PayOrder.query.filter_by(order_sn=order_sn, member_id=member_info.id).first()
+    if not pay_order_info:
+        resp['code'] = -1
+        resp['msg'] = "系统繁忙。请稍后再试~~"
+        return jsonify(resp)
+
+    if act == "cancel":
+        target_pay = PayService()
+        ret = target_pay.closeOrder(pay_order_id=pay_order_info.id)
+        if not ret:
+            resp['code'] = -1
+            resp['msg'] = "系统繁忙。请稍后再试~~"
+            return jsonify(resp)
+    elif act == "confirm":
+        pay_order_info.express_status = 1
+        pay_order_info.updated_time = getCurrentDate()
+        db.session.add(pay_order_info)
+        db.session.commit()
+
+    return jsonify(resp)
