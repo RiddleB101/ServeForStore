@@ -7,7 +7,7 @@
                 <div class="row  m-t p-w-m">
                     <div class="form-group">
                         <select name="status" class="form-control inline">
-                            <option value="-1">请选择状态</option>
+                            <option value="-1">Please choose an option</option>
                             {% for tmp_key in status_mapping %}
                                 <option value="{{ tmp_key }}" {% if tmp_key == search_con['status'] %}
                                         selected {% endif %}>{{ status_mapping[ tmp_key ] }}</option>
@@ -16,7 +16,7 @@
                     </div>
                     <div class="form-group">
                         <select name="cat_id" class="form-control inline">
-                            <option value="0">请选择分类</option>
+                            <option value="0">Please choose a category</option>
                             {% for tmp_key in cat_mapping %}
                                 <option value="{{ tmp_key }}" {% if tmp_key|string == search_con['cat_id'] %}
                                         selected {% endif %} >{{ cat_mapping[ tmp_key].name }}</option>
@@ -26,10 +26,10 @@
                     </div>
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="text" name="mix_kw" placeholder="请输入关键字" class="form-control" value="">
+                            <input type="text" name="mix_kw" placeholder="Please enter key word to search" class="form-control" value="">
                             <span class="input-group-btn">
                             <button type="button" class="btn  btn-primary search">
-                                <i class="fa fa-search"></i>搜索
+                                <i class="fa fa-search"></i>Search
                             </button>
                         </span>
                         </div>
@@ -86,14 +86,7 @@
                 {% endif %}
                 </tbody>
             </table>
-            <div class="row">
-                <div class="col-lg-12">
-                    <span class="pagination_count" style="line-height: 40px;">共1条记录 | 每页50条</span>
-                    <ul class="pagination pagination-lg pull-right" style="margin: 0 0 ;">
-                        <li class="active"><a href="javascript:void(0);">1</a></li>
-                    </ul>
-                </div>
-            </div>
+            {% include "common/pagenation.html" %}
         </div>
     </div>
 {% endblock %}

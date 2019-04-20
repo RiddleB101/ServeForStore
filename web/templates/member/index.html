@@ -7,7 +7,7 @@
                 <div class="row  m-t p-w-m">
                     <div class="form-group">
                         <select name="status" class="form-control inline">
-                            <option value="-1">请选择状态</option>
+                            <option value="-1">Please choose an option</option>
                             {% for key in status_mapping %}
                                 <option value="{{ key }}" {% if key == search_con['status'] %}
                                         selected {% endif %}>{{ status_mapping[key] }}</option>
@@ -16,12 +16,12 @@
                     </div>
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="text" name="mix_kw" placeholder="请输入关键字" class="form-control"
+                            <input type="text" name="mix_kw" placeholder="Please enter key word to search" class="form-control"
                                    value="{{ search_con['mix_kw'] }}">
                             <input type="hidden" name="p" value="{{ search_con['p'] }}">
                             <span class="input-group-btn">
                             <button type="button" class="btn  btn-primary search">
-                                <i class="fa fa-search"></i>搜索
+                                <i class="fa fa-search"></i>Search
                             </button>
                         </span>
                         </div>
@@ -32,11 +32,11 @@
             <table class="table table-bordered m-t">
                 <thead>
                 <tr>
-                    <th>头像</th>
-                    <th>姓名</th>
-                    <th>性别</th>
-                    <th>状态</th>
-                    <th>操作</th>
+                    <th>Avatar</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Status</th>
+                    <th>Operation</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -75,7 +75,7 @@
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="5">暂无数据</td>
+                        <td colspan="5">No Data</td>
                     </tr>
                 {% endif %}
                 </tbody>

@@ -7,7 +7,7 @@
                 <div class="row  m-t p-w-m">
                     <div class="form-group">
                         <select name="status" class="form-control inline">
-                            <option value="-1">请选择状态</option>
+                            <option value="-1">Please choose an option</option>
                             {% for key in status_mapping %}
                                 <option value="{{ key }}" {% if key == search_con['status'] %}
                                         selected {% endif %}>{{ status_mapping[key] }}</option>
@@ -20,7 +20,7 @@
                     <div class="col-lg-12">
                         <a class="btn btn-w-m btn-outline btn-primary pull-right"
                            href="{{ buildUrl('/product/cat-set') }}">
-                            <i class="fa fa-plus"></i>分类
+                            <i class="fa fa-plus"></i>Category
                         </a>
                     </div>
                 </div>
@@ -29,11 +29,11 @@
             <table class="table table-bordered m-t">
                 <thead>
                 <tr>
-                    <th>序号</th>
-                    <th>分类名称</th>
-                    <th>状态</th>
-                    <th>权重</th>
-                    <th>操作</th>
+                    <th>No.</th>
+                    <th>Category Name</th>
+                    <th>Status</th>
+                    <th>Weight</th>
+                    <th>Operation</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -44,23 +44,26 @@
                             <td>{{ item.name }}</td>
                             <td>{{ item.status_desc }}</td>
                             <td>{{ item.weight }}</td>
-                            {% if item.status == 1 %}
-                                <a class="m-l" href="{{ buildUrl('/product/cat-set') }}?id={{ item.id }}">
-                                    <i class="fa fa-edit fa-lg"></i>
-                                </a>
-                                <a class="m-l remove" href="javascript:void(0);" data="{{ item.id }}">
-                                    <i class="fa fa-trash fa-lg"></i>
-                                </a>
-                            {% else %}
-                                <a class="m-l recovery" href="javascript:void(0);" data="{{ item.id }}">
-                                    <i class="fa fa-rotate-left fa-lg"></i>
-                                </a>
-                            {% endif %}
+                            <td>
+                                {% if item.status == 1 %}
+                                    <a class="m-l" href="{{ buildUrl('/product/cat-set') }}?id={{ item.id }}">
+                                        <i class="fa fa-edit fa-lg"></i>
+                                    </a>
+                                    <a class="m-l remove" href="javascript:void(0);" data="{{ item.id }}">
+                                        <i class="fa fa-trash fa-lg"></i>
+                                    </a>
+                                {% else %}
+
+                                    <a class="m-l recovery" href="javascript:void(0);" data="{{ item.id }}">
+                                        <i class="fa fa-rotate-left fa-lg"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="5">暂无数据</td>
+                        <td colspan="5">No Data</td>
                     </tr>
                 {% endif %}
                 </tbody>

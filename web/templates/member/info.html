@@ -9,10 +9,10 @@
                         {% if info.status == 1 %}
                             <a class="btn btn-outline btn-primary pull-right"
                                href="{{ buildUrl('/member/set') }}?id={{ info.id }}">
-                                <i class="fa fa-pencil"></i>编辑
+                                <i class="fa fa-pencil"></i>Edit
                             </a>
                         {% endif %}
-                        <h2>会员信息</h2>
+                        <h2>Member Information</h2>
                     </div>
                 </div>
             </div>
@@ -22,8 +22,8 @@
                          width="100px" height="100px">
                 </div>
                 <div class="col-lg-10">
-                    <p class="m-t">姓名：{{ info.nickname }}</p>
-                    <p>性别：{{ info.gender_desc }}</p>
+                    <p class="m-t">Name：{{ info.nickname }}</p>
+                    <p>Gender：{{ info.gender_desc }}</p>
                 </div>
             </div>
             <div class="row m-t">
@@ -33,10 +33,10 @@
                             <div class="panel-options">
                                 <ul class="nav nav-tabs">
                                     <li class="active">
-                                        <a href="#tab-1" data-toggle="tab" aria-expanded="false">会员订单</a>
+                                        <a href="#tab-1" data-toggle="tab" aria-expanded="false">Order</a>
                                     </li>
                                     <li>
-                                        <a href="#tab-2" data-toggle="tab" aria-expanded="true">会员评论</a>
+                                        <a href="#tab-2" data-toggle="tab" aria-expanded="true">Comment</a>
                                     </li>
                                 </ul>
                             </div>
@@ -48,15 +48,15 @@
                                     <table class="table table-striped">
                                         <thead>
                                         <tr>
-                                            <th>订单编号</th>
-                                            <th>支付时间</th>
-                                            <th>支付金额</th>
-                                            <th>订单状态</th>
+                                            <th>Order Number</th>
+                                            <th>Pay Time</th>
+                                            <th>Pay Price</th>
+                                            <th>Order Status</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td colspan="4">暂无订单</td>
+                                            <td colspan="4">No Order</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -65,16 +65,16 @@
                                     <table class="table table-striped">
                                         <thead>
                                         <tr>
-                                            <th>评论时间</th>
-                                            <th>评分</th>
-                                            <th>评论内容</th>
+                                            <th>Comment Time</th>
+                                            <th>Score</th>
+                                            <th>Content</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr>
                                         </tr>
                                         <tr>
-                                            <td colspan="3">暂无评论</td>
+                                            <td colspan="3">No Comment</td>
                                         </tr>
 
                                         </tbody>
