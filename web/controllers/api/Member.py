@@ -60,7 +60,7 @@ def login():
     return jsonify(resp)
 
 
-@route_api.route("/member/check-reg", methods=['GET', 'POST'])
+@route_api.route("/member/check-login", methods=['GET', 'POST'])
 def checkReg():
     resp = {"code": 200, "msg": "登录成功", "data": {}}
     req = request.values
@@ -89,4 +89,6 @@ def checkReg():
         return jsonify(resp)
     token = "%s#%s" % (MemberService.geneAuthCode(member_info), member_info.id)
     resp['data'] = {"token": token}
+    resp['data']['avatar'] = member_info.avatar
+    resp['data']['nickname'] = member_info.nickname
     return jsonify(resp)
