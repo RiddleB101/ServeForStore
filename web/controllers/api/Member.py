@@ -61,7 +61,7 @@ def login():
 
 
 @route_api.route("/member/check-login", methods=['GET', 'POST'])
-def checkReg():
+def checkLogin():
     resp = {"code": 200, "msg": "登录成功", "data": {}}
     req = request.values
     code = req['code'] if 'code' in req else ''

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from application import db, app
 from web.controllers.api import route_api
 from flask import request, jsonify, g
 from common.models.product.Product import Product
 from common.models.pay.PayOrder import PayOrder
 from common.models.pay.PayOrderItem import PayOrderItem
-from common.libs.Helper import selectFilterObj, getDictFiletrField
+from common.models.member.MemberComments import MemberComment
+from common.libs.Helper import selectFilterObj, getDictFilterField, getCurrentDate
 from common.libs.UrlManager import UrlManager
 import json, datetime
 
@@ -36,7 +38,7 @@ def myOrderList():
         pay_order_ids = selectFilterObj(pay_order_list, "id")
         pay_order_item_list = PayOrderItem.query.filter(PayOrderItem.pay_order_id.in_(pay_order_ids))
         product_ids = selectFilterObj(pay_order_item_list, 'product_id')
-        product_map = getDictFiletrField(Product, Product.id, 'id', product_ids)
+        product_map = getDictFilterField(Product, Product.id, 'id', product_ids)
         pay_order_item_map = {}
         if pay_order_item_list:
             for item in pay_order_item_list:
@@ -93,7 +95,7 @@ def myOrderInfo():
     pay_order_items = PayOrderItem.query.filter_by(pay_order_id=pay_order_info.id).all()
     if pay_order_items:
         product_ids = selectFilterObj(pay_order_items, "product_id")
-        product_map = getDictFiletrField(Product, Product.id, "id", product_ids)
+        product_map = getDictFilterField(Product, Product.id, "id", product_ids)
         for item in pay_order_items:
             tmp_product_info = product_map[item.product_id]
             tmp_data = {
@@ -104,4 +106,65 @@ def myOrderInfo():
             }
             info['goods'].append(tmp_data)
     resp['data']['info'] = info
+    return jsonify(resp)
+
+
+@route_api.route("/my/comment/add", methods=["POST"])
+def myCommentAdd():
+    resp = {'code': 200, 'msg': '操作成功~', 'data': {}}
+    member_info = g.member_info
+    req = request.values
+    order_sn = req['order_sn'] if 'order_sn' in req else ''
+    score = req['score'] if 'score' in req else 10
+    content = req['content'] if 'content' in req else ''
+
+    pay_order_info = PayOrder.query.filter_by(member_id=member_info.id, order_sn=order_sn).first()
+    if not pay_order_info:
+        resp['code'] = -1
+        resp['msg'] = "系统繁忙，请稍后再试~~"
+        return jsonify(resp)
+
+    if pay_order_info.comment_status:
+        resp['code'] = -1
+        resp['msg'] = "已经评价过了~~"
+        return jsonify(resp)
+
+    pay_order_items = PayOrderItem.query.filter_by(pay_order_id=pay_order_info.id).all()
+    product_ids = selectFilterObj(pay_order_items, "product_id")
+    tmp_product_ids_str = '_'.join(str(s) for s in product_ids if s not in [None])
+    model_comment = MemberComment()
+    model_comment.product_ids = "_%s_" % tmp_product_ids_str
+    model_comment.member_id = member_info.id
+    model_comment.pay_order_id = pay_order_info.id
+    model_comment.score = score
+    model_comment.content = content
+    db.session.add(model_comment)
+
+    pay_order_info.comment_status = 1
+    pay_order_info.updated_time = getCurrentDate()
+    db.session.add(pay_order_info)
+
+    db.session.commit()
+    return jsonify(resp)
+
+
+@route_api.route("/my/comment/list")
+def myCommentList():
+    resp = {'code': 200, 'msg': '操作成功~', 'data': {}}
+    member_info = g.member_info
+    comment_list = MemberComment.query.filter_by(member_id=member_info.id) \
+        .order_by(MemberComment.id.desc()).all()
+    data_comment_list = []
+    if comment_list:
+        pay_order_ids = selectFilterObj(comment_list, "pay_order_id")
+        pay_order_map = getDictFilterField(PayOrder, PayOrder.id, "id", pay_order_ids)
+        for item in comment_list:
+            tmp_pay_order_info = pay_order_map[item.pay_order_id]
+            tmp_data = {
+                "date": item.created_time.strftime("%Y-%m-%d %H:%M:%S"),
+                "content": item.content,
+                "order_number": tmp_pay_order_info.order_number
+            }
+            data_comment_list.append(tmp_data)
+    resp['data']['list'] = data_comment_list
     return jsonify(resp)

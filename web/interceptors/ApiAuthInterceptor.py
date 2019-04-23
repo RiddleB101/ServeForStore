@@ -51,7 +51,6 @@ def check_member_login():
     except Exception:
         return False
 
-    print('5')
 
     if member_info is None:
         return False
@@ -62,6 +61,5 @@ def check_member_login():
     if member_info.status != 1:
         return False
 
-    print('6')
 
     return member_info

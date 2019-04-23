@@ -9,7 +9,7 @@ from common.models.product.Product import Product
 from common.models.product.ProductCat import ProductCat
 from common.models.product.ProductSaleChangeLog import ProductSaleChangeLog
 from common.models.product.ProductStockChangeLog import ProductStockChangeLog
-from common.libs.Helper import getCurrentDate, iPagination, getDictFiletrField
+from common.libs.Helper import getCurrentDate, iPagination, getDictFilterField
 from common.libs.UrlManager import UrlManager
 from sqlalchemy import or_
 
@@ -45,7 +45,7 @@ def index():
     offset = (page - 1) * app.config['PAGE_SIZE']
     list = query.order_by(Product.id.desc()).offset(offset).limit(app.config['PAGE_SIZE']).all()
 
-    cat_mapping = getDictFiletrField(ProductCat, ProductCat.id, 'id', [])
+    cat_mapping = getDictFilterField(ProductCat, ProductCat.id, 'id', [])
     resp_data['list'] = list
     resp_data['pages'] = pages
     resp_data['search_con'] = req
