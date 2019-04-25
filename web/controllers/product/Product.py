@@ -9,6 +9,9 @@ from common.models.product.Product import Product
 from common.models.product.ProductCat import ProductCat
 from common.models.product.ProductSaleChangeLog import ProductSaleChangeLog
 from common.models.product.ProductStockChangeLog import ProductStockChangeLog
+from common.models.pay.PayOrderItem import PayOrderItem
+from common.models.pay.PayOrder import PayOrder
+from common.models.member.Member import Member
 from common.libs.Helper import getCurrentDate, iPagination, getDictFilterField
 from common.libs.UrlManager import UrlManager
 from sqlalchemy import or_
@@ -69,8 +72,23 @@ def info():
         return redirect(reback_url)
     stock_change_list = ProductStockChangeLog.query.filter(ProductStockChangeLog.product_id == id).order_by(
         ProductStockChangeLog.id.desc()).all()
+    item_info = PayOrderItem.query.filter_by(product_id=id).all()
+    data_item_info = []
+    if item_info:
+        for item in item_info:
+            member_info = Member.query.filter_by(id=item.member_id).first()
+            order_info = PayOrder.query.filter_by(id=item.pay_order_id).first()
+            tmp_data = {
+                "member_name": member_info.nickname,
+                'quantity': item.quantity,
+                'price': item.price,
+                'status': order_info.status_desc
+            }
+            data_item_info.append(tmp_data)
+
     resp_data['info'] = info
     resp_data['stock_change_list'] = stock_change_list
+    resp_data['sale_log_list'] = data_item_info
     resp_data['current'] = 'index'
     return ops_render('product/info.html', resp_data)
 

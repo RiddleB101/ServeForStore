@@ -29,3 +29,14 @@ class PayOrder(db.Model):
         order_number = self.created_time.strftime("%Y%m%d%H%M%S")
         order_number = order_number + str(self.id).zfill(5)
         return order_number
+
+    @property
+    def status_desc(self):
+        status_mapping = {
+            0: 'Completed',
+            -8: 'Need to Pay',
+            -6: 'Need to confirm',
+            -5: 'Need to confirm',
+            1: 'Completed',
+        }
+        return status_mapping[int(self.status)]

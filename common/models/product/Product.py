@@ -1,6 +1,7 @@
 # coding: utf-8
-from sqlalchemy import Column, DateTime, Integer, Numeric, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric, String
 from sqlalchemy.schema import FetchedValue
+from sqlalchemy.orm import relationship
 from application import db, app
 
 
@@ -8,7 +9,7 @@ class Product(db.Model):
     __tablename__ = 'product'
 
     id = db.Column(db.Integer, primary_key=True)
-    cat_id = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
+    cat_id = db.Column(db.ForeignKey('product_cat.id'), nullable=False, index=True, server_default=db.FetchedValue())
     name = db.Column(db.String(100), nullable=False, server_default=db.FetchedValue())
     price = db.Column(db.Numeric(10, 2), nullable=False, server_default=db.FetchedValue())
     main_image = db.Column(db.String(100), nullable=False, server_default=db.FetchedValue())
@@ -22,3 +23,6 @@ class Product(db.Model):
     comment_count = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     updated_time = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     created_time = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
+    beacon_id = db.Column(db.Integer, nullable=False)
+
+    cat = db.relationship('ProductCat', primaryjoin='Product.cat_id == ProductCat.id', backref='products')

@@ -3,6 +3,8 @@
 from flask import Blueprint, request, redirect, jsonify
 from common.libs.Helper import ops_render, iPagination, getCurrentDate
 from common.models.member.Member import Member
+from common.models.member.MemberComments import MemberComment
+from common.models.pay.PayOrder import PayOrder
 from common.libs.UrlManager import UrlManager
 from application import app, db
 
@@ -54,7 +56,35 @@ def info():
     if not info:
         return redirect(reback_url)
 
+    order_info = PayOrder.query.filter_by(member_id=id).all()
+    data_order_info = []
+    if order_info:
+        for item in order_info:
+            tmp_data = {
+                "order_id": item.id,
+                "order_sn": item.order_sn,
+                "pay_price": item.pay_price,
+                "order_status": item.status_desc,
+                "order_status_num": item.status,
+            }
+            data_order_info.append(tmp_data)
+
+    comment_info = MemberComment.query.filter_by(member_id=id).all()
+    data_comment_info = []
+    if comment_info:
+        for item in comment_info:
+            tmp_data = {
+                "comment_id": item.id,
+                "comment_time": item.created_time,
+                "score": item.score,
+                "content": item.content,
+                "order_id": item.pay_order_id,
+            }
+            data_comment_info.append(tmp_data)
+
     resp_data['info'] = info
+    resp_data['order_info'] = data_order_info
+    resp_data['comment_info'] = data_comment_info
     resp_data['current'] = 'index'
     return ops_render('member/info.html', resp_data)
 

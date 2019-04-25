@@ -51,16 +51,34 @@
                                     <table class="table table-striped">
                                         <thead>
                                         <tr>
-                                            <th>Order Number</th>
-                                            <th>Pay Time</th>
+                                            <th>Order No.</th>
+                                            <th>Order sn</th>
                                             <th>Pay Price</th>
                                             <th>Order Status</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td colspan="4">No Order</td>
-                                        </tr>
+                                        {% if order_info %}
+                                            {% for item in order_info %}
+                                                <tr>
+                                                    <td>{{ item.order_id }}</td>
+                                                    <td>{{ item.order_sn }}</td>
+                                                    <td>{{ item.pay_price }}</td>
+                                                    <td>{{ item.order_status }}</td>
+                                                    {% if item.order_status_num == -8 %}
+                                                        <td>
+                                                            <button>To Pay</button>
+                                                        </td>
+                                                    {% else %}
+                                                        <td>Complete</td>
+                                                    {% endif %}
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="5">No Order</td>
+                                            </tr>
+                                        {% endif %}
                                         </tbody>
                                     </table>
                                 </div>
@@ -68,6 +86,7 @@
                                     <table class="table table-striped">
                                         <thead>
                                         <tr>
+                                            <th>Order id</th>
                                             <th>Comment Time</th>
                                             <th>Score</th>
                                             <th>Content</th>
@@ -76,9 +95,21 @@
                                         <tbody>
                                         <tr>
                                         </tr>
-                                        <tr>
-                                            <td colspan="3">No Comment</td>
-                                        </tr>
+                                        {% if comment_info %}
+                                            {% for item in comment_info %}
+                                                <tr>
+                                                    <td>{{ item.order_id }}</td>
+                                                    <td>{{ item.comment_time }}</td>
+                                                    <td>{{ item.score }}</td>
+                                                    <td>{{ item.content }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="4">No Comment</td>
+                                            </tr>
+                                        {% endif %}
+
 
                                         </tbody>
                                     </table>

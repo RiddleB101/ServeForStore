@@ -9,7 +9,7 @@ class MemberComment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     member_id = db.Column(db.Integer, nullable=False, index=True, server_default=db.FetchedValue())
-    food_ids = db.Column(db.String(200), nullable=False, server_default=db.FetchedValue())
+    product_ids = db.Column(db.String(200), nullable=False, server_default=db.FetchedValue())
     pay_order_id = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     score = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     content = db.Column(db.String(200), nullable=False, server_default=db.FetchedValue())
