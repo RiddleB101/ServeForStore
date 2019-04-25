@@ -67,7 +67,8 @@
                                                     <td>{{ item.order_status }}</td>
                                                     {% if item.order_status_num == -8 %}
                                                         <td>
-                                                            <button>To Pay</button>
+                                                            <button class="payment-icon pay">Pay</button>
+                                                            <button class="cancel">Cancel</button>
                                                         </td>
                                                     {% else %}
                                                         <td>Complete</td>
@@ -140,4 +141,7 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block js %}
+    <script src="{{ buildStaticUrl("/js/product/info.js") }}"></script>
 {% endblock %}

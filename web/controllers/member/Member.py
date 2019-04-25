@@ -6,6 +6,7 @@ from common.models.member.Member import Member
 from common.models.member.MemberComments import MemberComment
 from common.models.pay.PayOrder import PayOrder
 from common.libs.UrlManager import UrlManager
+from common.libs.pay.PayService import PayService
 from application import app, db
 
 route_member = Blueprint('member_page', __name__)
@@ -137,7 +138,10 @@ def set():
 
 @route_member.route('/comment')
 def comment():
-    return ops_render('member/comment.html', {'current': 'comment'})
+    resp_data = {}
+
+    resp_data['current'] = 'comment'
+    return ops_render('member/comment.html', resp_data)
 
 
 @route_member.route('/ops', methods=['POST'])
@@ -170,5 +174,35 @@ def ops():
     member_info = getCurrentDate()
     db.session.add(member_info)
     db.session.commit()
+
+    return jsonify(resp)
+
+
+@route_member.route("/order_ops", methods=["POST"])
+def memberOrderOps():
+    # function still in process TODO
+    resp = {'code': 200, 'msg': '操作成功~', 'data': {}}
+    req = request.values
+    member_info = g.member_info
+    order_sn = req['order_sn'] if 'order_sn' in req else ''
+    act = req['act'] if 'act' in req else ''
+    pay_order_info = PayOrder.query.filter_by(order_sn=order_sn, member_id=member_info.id).first()
+    if not pay_order_info:
+        resp['code'] = -1
+        resp['msg'] = "系统繁忙。请稍后再试~~"
+        return jsonify(resp)
+
+    if act == "cancel":
+        target_pay = PayService()
+        ret = target_pay.closeOrder(pay_order_id=pay_order_info.id)
+        if not ret:
+            resp['code'] = -1
+            resp['msg'] = "系统繁忙。请稍后再试~~"
+            return jsonify(resp)
+    elif act == "pay":
+        pay_order_info.express_status = 1
+        pay_order_info.updated_time = getCurrentDate()
+        db.session.add(pay_order_info)
+        db.session.commit()
 
     return jsonify(resp)
