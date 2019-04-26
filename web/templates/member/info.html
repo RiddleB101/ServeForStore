@@ -67,8 +67,14 @@
                                                     <td>{{ item.order_status }}</td>
                                                     {% if item.order_status_num == -8 %}
                                                         <td>
-                                                            <button class="payment-icon pay">Pay</button>
-                                                            <button class="cancel">Cancel</button>
+                                                            <a class="m-l pay" href="javascript:void(0);"
+                                                               data="{{ item.order_sn }}">
+                                                                <i class="fa fa-credit-card"> Pay</i>
+                                                            </a>
+                                                            <a class="m-l cancel" href="javascript:void(0);"
+                                                               data="{{ item.order_sn }}">
+                                                                <i class="fa fa-ban"> Cancel</i>
+                                                            </a>
                                                         </td>
                                                     {% else %}
                                                         <td>Complete</td>

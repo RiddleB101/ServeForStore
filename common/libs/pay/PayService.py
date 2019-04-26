@@ -143,7 +143,6 @@ class PayService():
 
             pay_order_info.pay_sn = params['pay_sn'] if params and 'pay_sn' in params else ''
             pay_order_info.status = 1
-            pay_order_info.express_status = -7
             pay_order_info.updated_time = getCurrentDate()
             db.session.add(pay_order_info)
 

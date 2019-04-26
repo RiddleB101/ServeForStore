@@ -118,7 +118,7 @@ def myCommentAdd():
     score = req['score'] if 'score' in req else 10
     content = req['content'] if 'content' in req else ''
 
-    pay_order_info = PayOrder.query.filter_by(member_id=member_info.id, order_sn=order_sn).first()
+    pay_order_info = PayOrder.query.filter_by(order_sn=order_sn).first()
     if not pay_order_info:
         resp['code'] = -1
         resp['msg'] = "系统繁忙，请稍后再试~~"
@@ -127,6 +127,11 @@ def myCommentAdd():
     if pay_order_info.comment_status:
         resp['code'] = -1
         resp['msg'] = "已经评价过了~~"
+        pay_order_info.comment_status = 1
+        pay_order_info.status = 1
+        pay_order_info.updated_time = getCurrentDate()
+        db.session.add(pay_order_info)
+        db.session.commit()
         return jsonify(resp)
 
     pay_order_items = PayOrderItem.query.filter_by(pay_order_id=pay_order_info.id).all()
@@ -141,10 +146,11 @@ def myCommentAdd():
     db.session.add(model_comment)
 
     pay_order_info.comment_status = 1
+    pay_order_info.status = 1
     pay_order_info.updated_time = getCurrentDate()
     db.session.add(pay_order_info)
-
     db.session.commit()
+
     return jsonify(resp)
 
 

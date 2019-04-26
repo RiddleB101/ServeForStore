@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, redirect, jsonify
+from flask import Blueprint, request, redirect, jsonify, g
 from common.libs.Helper import ops_render, iPagination, getCurrentDate
 from common.models.member.Member import Member
 from common.models.member.MemberComments import MemberComment
@@ -139,7 +139,6 @@ def set():
 @route_member.route('/comment')
 def comment():
     resp_data = {}
-
     resp_data['current'] = 'comment'
     return ops_render('member/comment.html', resp_data)
 
@@ -180,13 +179,11 @@ def ops():
 
 @route_member.route("/order_ops", methods=["POST"])
 def memberOrderOps():
-    # function still in process TODO
     resp = {'code': 200, 'msg': '操作成功~', 'data': {}}
     req = request.values
-    member_info = g.member_info
     order_sn = req['order_sn'] if 'order_sn' in req else ''
-    act = req['act'] if 'act' in req else ''
-    pay_order_info = PayOrder.query.filter_by(order_sn=order_sn, member_id=member_info.id).first()
+    act = req['action'] if 'action' in req else ''
+    pay_order_info = PayOrder.query.filter_by(order_sn=order_sn).first()
     if not pay_order_info:
         resp['code'] = -1
         resp['msg'] = "系统繁忙。请稍后再试~~"
@@ -200,8 +197,9 @@ def memberOrderOps():
             resp['msg'] = "系统繁忙。请稍后再试~~"
             return jsonify(resp)
     elif act == "pay":
-        pay_order_info.express_status = 1
+        pay_order_info.status = -5
         pay_order_info.updated_time = getCurrentDate()
+        print(pay_order_info.status, pay_order_info.updated_time)
         db.session.add(pay_order_info)
         db.session.commit()
 

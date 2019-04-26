@@ -1,8 +1,8 @@
 # coding: utf-8
-from sqlalchemy import BigInteger, Column, DateTime, Index, Integer, Numeric, String, Text
+from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, Numeric, String, Text
 from sqlalchemy.schema import FetchedValue
+from sqlalchemy.orm import relationship
 from application import db, app
-import datetime
 
 
 class PayOrder(db.Model):
@@ -13,16 +13,20 @@ class PayOrder(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     order_sn = db.Column(db.String(40), nullable=False, unique=True, server_default=db.FetchedValue())
-    member_id = db.Column(db.BigInteger, nullable=False, server_default=db.FetchedValue())
+    member_id = db.Column(db.ForeignKey('member.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False,
+                          server_default=db.FetchedValue())
     total_price = db.Column(db.Numeric(10, 2), nullable=False, server_default=db.FetchedValue())
     pay_price = db.Column(db.Numeric(10, 2), nullable=False, server_default=db.FetchedValue())
     pay_sn = db.Column(db.String(128), nullable=False, server_default=db.FetchedValue())
     prepay_id = db.Column(db.String(128), nullable=False, server_default=db.FetchedValue())
     note = db.Column(db.Text, nullable=False)
+    comment_status = db.Column(db.Integer, server_default=db.FetchedValue())
     status = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     pay_time = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     updated_time = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     created_time = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
+
+    member = db.relationship('Member', primaryjoin='PayOrder.member_id == Member.id', backref='pay_orders')
 
     @property
     def order_number(self):
@@ -40,3 +44,4 @@ class PayOrder(db.Model):
             1: 'Completed',
         }
         return status_mapping[int(self.status)]
+

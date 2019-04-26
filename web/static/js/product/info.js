@@ -14,7 +14,7 @@ var member_order_ops = {
             that.ops('cancel', $(this).attr("data"));
         });
     },
-    ops: function (action, id) {
+    ops: function (action, order_sn) {
         var callback = {
             'ok': function () {
                 $.ajax({
@@ -22,7 +22,7 @@ var member_order_ops = {
                     type: "POST",
                     data: {
                         action: action,
-                        id: id
+                        order_sn: order_sn
                     },
                     dataType: "json",
                     success: function (res) {
