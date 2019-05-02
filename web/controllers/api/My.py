@@ -25,7 +25,7 @@ def myOrderList():
         query = query.filter(PayOrder.status == -8)
     elif status == -6:  # 待确认
         query = query.filter(PayOrder.status == -6)
-    elif status == -5:  # 待确认
+    elif status == -5:  # 待评价
         query = query.filter(PayOrder.status == -5)
     elif status == 1:  # 已完成
         query = query.filter(PayOrder.status == 1)

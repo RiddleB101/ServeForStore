@@ -49,3 +49,17 @@ UPLOAD = {
 APP = {
     'domain': "http://127.0.0.1:5000"
 }
+
+PAY_STATUS_MAPPING = {
+    "1": "COMPLETED",
+    "-8": "TO BE PAID",
+    "0": "CLOSED"
+}
+
+PAY_STATUS_DISPLAY_MAPPING = {
+    "0": "CLOSED",
+    "1": "PAID",
+    "-8": "TO BE PAID",
+    "-6": "TO BE CONFIRMED",
+    "-5": "TO BE COMMENTED"
+}

@@ -2,6 +2,7 @@
 
 from web.controllers.api import route_api
 from common.libs.Helper import getCurrentDate
+from common.models.beacon.BeaconInfo import BeaconInfo
 from application import app, db
 from flask import request, json, jsonify
 
