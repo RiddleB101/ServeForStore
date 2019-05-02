@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, request, redirect, jsonify, g
-from common.libs.Helper import ops_render, iPagination, getCurrentDate
+from common.libs.Helper import ops_render, iPagination, getCurrentDate, selectFilterObj, getDictFilterField
 from common.models.member.Member import Member
 from common.models.member.MemberComments import MemberComment
+from common.models.product.Product import Product
 from common.models.pay.PayOrder import PayOrder
 from common.libs.UrlManager import UrlManager
 from common.libs.pay.PayService import PayService
@@ -136,11 +137,58 @@ def set():
     return jsonify(resp)
 
 
-@route_member.route('/comment')
+@route_member.route("/comment")
 def comment():
     resp_data = {}
+    req = request.args
+    page = int(req['p']) if ('p' in req and req['p']) else 1
+    query = MemberComment.query
+
+    page_params = {
+        'total': query.count(),
+        'page_size': app.config['PAGE_SIZE'],
+        'page': page,
+        'display': app.config['PAGE_DISPLAY'],
+        'url': request.full_path.replace("&p={}".format(page), "")
+    }
+
+    pages = iPagination(page_params)
+    offset = (page - 1) * app.config['PAGE_SIZE']
+
+    comment_list = query.order_by(MemberComment.id.desc()).offset(offset).limit(app.config['PAGE_SIZE']).all()
+    data_list = []
+    if comment_list:
+        member_map = getDictFilterField(Member, Member.id, "id", selectFilterObj(comment_list, "member_id"))
+        product_ids = []
+        for item in comment_list:
+            tmp_product_ids = (item.product_ids[1:-1]).split("_")
+            tmp_product_ids = {}.fromkeys(tmp_product_ids).keys()
+            product_ids = product_ids + list(tmp_product_ids)
+
+        product_map = getDictFilterField(Product, Product.id, "id", product_ids)
+
+        for item in comment_list:
+            tmp_member_info = member_map[item.member_id]
+            tmp_products = []
+            tmp_product_ids = (item.product_ids[1:-1]).split("_")
+            for tmp_product_id in tmp_product_ids:
+                tmp_product_info = product_map[int(tmp_product_id)]
+                tmp_products.append({
+                    'name': tmp_product_info.name,
+                })
+
+            tmp_data = {
+                "content": item.content,
+                "score": item.score,
+                "member_info": tmp_member_info,
+                "products": tmp_products
+            }
+            data_list.append(tmp_data)
+    resp_data['list'] = data_list
+    resp_data['pages'] = pages
     resp_data['current'] = 'comment'
-    return ops_render('member/comment.html', resp_data)
+
+    return ops_render("member/comment.html", resp_data)
 
 
 @route_member.route('/ops', methods=['POST'])
