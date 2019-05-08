@@ -119,6 +119,7 @@ def set():
     main_image = req['main_image'] if 'main_image' in req else ''
     summary = req['summary'] if 'summary' in req else ''
     stock = int(req['stock']) if 'stock' in req else 0
+    beacon_id = int(req['beacon_id']) if 'beacon_id' in req else 0
     tags = req['tags'] if 'tags' in req else ''
 
     price = Decimal(price).quantize(Decimal('0.00'))
@@ -152,6 +153,11 @@ def set():
         resp['msg'] = "请输入符合规范的存量"
         return jsonify(resp)
 
+    if beacon_id <= 0:
+        resp['code'] = -1
+        resp['msg'] = "请输入符合规范的iBeacon ID"
+        return jsonify(resp)
+
     if tags is None or len(tags) < 1:
         resp['code'] = -1
         resp['msg'] = "请输入标签"
@@ -173,6 +179,7 @@ def set():
     model_product.main_image = main_image
     model_product.summary = summary
     model_product.stock = stock
+    model_product.beacon_id = beacon_id
     model_product.tags = tags
     model_product.updated_time = getCurrentDate()
 

@@ -55,6 +55,9 @@ var product_set_ops = {
             var stock_target = $(".wrap_product_set input[name=stock]");
             var stock = stock_target.val();
 
+            var beacon_target = $(".wrap_product_set input[name=beacon_id]");
+            var beacon = beacon_target.val();
+
             var tags_target = $(".wrap_product_set input[name=tags]");
             var tags = $.trim(tags_target.val());
 
