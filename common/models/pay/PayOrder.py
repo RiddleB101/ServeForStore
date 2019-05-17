@@ -29,6 +29,17 @@ class PayOrder(db.Model):
     member = db.relationship('Member', primaryjoin='PayOrder.member_id == Member.id', backref='pay_orders')
 
     @property
+    def pay_status(self):
+        tmp_status = self.status
+        if self.status == 1:
+            tmp_status = self.express_status
+            if self.express_status == 1 and self.comment_status == 0:
+                tmp_status = -5
+            if self.express_status == 1 and self.comment_status == 1:
+                tmp_status = 1
+        return tmp_status
+
+    @property
     def order_number(self):
         order_number = self.created_time.strftime("%Y%m%d%H%M%S")
         order_number = order_number + str(self.id).zfill(5)
@@ -44,4 +55,3 @@ class PayOrder(db.Model):
             1: 'Completed',
         }
         return status_mapping[int(self.status)]
-

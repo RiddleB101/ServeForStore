@@ -7,6 +7,7 @@ from common.libs.Helper import ops_render
 from common.libs.product.ProductService import ProductService
 from common.models.product.Product import Product
 from common.models.product.ProductCat import ProductCat
+from common.models.beacon.BeaconInfo import BeaconInfo
 from common.models.product.ProductSaleChangeLog import ProductSaleChangeLog
 from common.models.product.ProductStockChangeLog import ProductStockChangeLog
 from common.models.pay.PayOrderItem import PayOrderItem
@@ -153,7 +154,7 @@ def set():
         resp['msg'] = "请输入符合规范的存量"
         return jsonify(resp)
 
-    if beacon_id <= 0:
+    if BeaconInfo.query.filter_by(id=beacon_id) is None:
         resp['code'] = -1
         resp['msg'] = "请输入符合规范的iBeacon ID"
         return jsonify(resp)
