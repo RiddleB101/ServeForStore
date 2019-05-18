@@ -115,14 +115,9 @@ def info():
             }
             data_order_item_list.append(tmp_data)
 
-    address_info = {}
-    if pay_order_info.express_info:
-        address_info = json.loads(pay_order_info.express_info)
-
     resp_data['pay_order_info'] = pay_order_info
     resp_data['pay_order_items'] = data_order_item_list
     resp_data['member_info'] = member_info
-    resp_data['address_info'] = address_info
     resp_data['current'] = 'index'
     return ops_render("finance/pay_info.html", resp_data)
 
@@ -147,7 +142,7 @@ def set():
     list = query.order_by(PayOrder.id.desc()).offset(offset).limit(app.config['PAGE_SIZE']).all()
 
     stat_info = db.session.query(PayOrder, func.sum(PayOrder.total_price).label("total")).filter(
-        PayOrder.status == 1).first()
+        PayOrder.status == 1).group_by(PayOrder.id).first()
 
     app.logger.info(stat_info)
     resp_data['list'] = list
@@ -168,11 +163,5 @@ def orderOps():
         resp['code'] = -1
         resp['msg'] = "系统繁忙。请稍后再试~~"
         return jsonify(resp)
-
-    if act == "express":
-        pay_order_info.express_status = -6
-        pay_order_info.updated_time = getCurrentDate()
-        db.session.add(pay_order_info)
-        db.session.commit()
 
     return jsonify(resp)

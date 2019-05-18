@@ -3,26 +3,35 @@
     {% include "common/tab_finance.html" %}
     <div class="row">
         <div class="col-lg-12 m-t">
-            <p>总收款金额：5.35元</p>
+            <p>Total Income：${{ total_money }}</p>
         </div>
         <div class="col-lg-12">
             <table class="table table-bordered m-t">
                 <thead>
                 <tr>
-                    <th>订单编号</th>
-                    <th>价格</th>
-                    <th>支付时间</th>
+                    <th>Order No.</th>
+                    <th>Price</th>
+                    <th>Pay Time</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>20180224387</td>
-                    <td>0.05</td>
-                    <td>2018-02-24 12:37</td>
-                </tr>
+                {% if list %}
+                    {% for item in list %}
+                        <tr>
+                            <td>{{ item.order_number }}</td>
+                            <td>{{ item.total_price }}</td>
+                            <td>{{ item.pay_time }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3">No Data</td>
+                    </tr>
+                {% endif %}
                 </tbody>
             </table>
-            {% include "common/pagenation.html" %}
+            <!--分页代码已被封装到统一模板文件中-->
+            {% include 'common/pagenation.html' %}
         </div>
     </div>
 {% endblock %}
