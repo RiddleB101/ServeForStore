@@ -9,7 +9,7 @@ from flask import request, json, jsonify
 
 @route_api.route("/find/beacon", methods=['GET', 'POST'])
 def Beacon():
-    resp = {"code": 200, "msg": "登录成功", "data": {}}
+    resp = {"code": 200, "data": {}}
     req = request.values
     beacon_info = req['beacon_info'] if 'beacon_info' in req else ''
     beacons = []
@@ -17,6 +17,8 @@ def Beacon():
         beacons.append(json.dumps(i))
     for beacon in beacons:
         beacon_uuid = BeaconInfo.query.filter_by(uuid=beacon.uuid).first()
-        if beacon_uuid:
-            pass
+        if beacon_uuid and beacon.accuracy <= 20:
+            target = BeaconInfo()
+
+
     return jsonify(resp)
