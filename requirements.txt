@@ -2,5 +2,11 @@ werkzeug
 sqlalchemy
 flask
 flask-sqlalchemy
-mysqlclient
+flask-sqlacodegen
 flask_script
+mysqlclient
+numpy
+surprise
+apyori
+requests
+uwsgi
